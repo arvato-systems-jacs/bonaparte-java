@@ -46,8 +46,9 @@ public class ByteArraySerializationTest {
         byte [] res1 = serialize(test1);
         byte [] res2 = serialize(test2);
 
-        dumpToFile("/tmp/byte-array-1", res1);
-        dumpToFile("/tmp/byte-array-2", res2);
+        final String homeDir = System.getProperty("user.home");
+        dumpToFile(homeDir + "/tmp/byte-array-1", res1);
+        dumpToFile(homeDir + "/tmp/byte-array-2", res2);
 
         Object r1 = deserialize(res1);
         System.out.println("Got object " + r1.getClass().getName());
