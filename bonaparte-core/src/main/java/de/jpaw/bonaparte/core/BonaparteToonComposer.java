@@ -10,7 +10,6 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
 
 import org.slf4j.Logger;
@@ -50,7 +49,7 @@ import de.jpaw.util.ByteBuilder;
  * TOON is a line-oriented, indentation-based text format that encodes the JSON data model
  * with explicit structure and minimal quoting.
  *
- * See https://github.com/toon-format/toon for the specification.
+ * See https://github.com/toon-format/toon for the specification, as well as https://github.com/toon-format/spec
  *
  * Key features of this implementation:
  * - Strings are always quoted (as per requirement)
@@ -59,7 +58,7 @@ import de.jpaw.util.ByteBuilder;
  * - Numbers are output in plain decimal form (no scientific notation)
  * - Date/time types are formatted as ISO-8601 strings
  *
- * @author Michael Bischoff (jpaw.de)
+ * @author github copilot and Michael Bischoff (jpaw.de)
  */
 public class BonaparteToonComposer extends AbstractMessageComposer<IOException> {
     private static final Logger LOGGER = LoggerFactory.getLogger(BonaparteToonComposer.class);
