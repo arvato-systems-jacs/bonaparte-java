@@ -417,7 +417,7 @@ public class ToonComposerTest {
         // Serialize to TOON
         StringBuilder sb = new StringBuilder();
         BonaparteToonComposer composer = new BonaparteToonComposer(sb);
-        composer.writeRecord(data);
+        composer.writeObject(data);
         
         String result = sb.toString();
         System.out.println("Nested object with lists result:");
