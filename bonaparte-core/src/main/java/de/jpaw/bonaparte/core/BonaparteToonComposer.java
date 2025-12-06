@@ -471,9 +471,8 @@ public class BonaparteToonComposer extends AbstractMessageComposer<IOException> 
         }
         
         if (inArray) {
-            // Array of objects - not yet fully implemented
-            // Would need list item format: "- " prefix
-            throw new UnsupportedOperationException("Arrays of objects not yet fully supported in TOON format");
+            // Arrays of objects not supported - would require list item format with "- " prefix
+            throw new UnsupportedOperationException("Arrays of objects not supported in TOON format");
         } else {
             writeIndent();
             writeKey(di.getName());
@@ -628,20 +627,17 @@ public class BonaparteToonComposer extends AbstractMessageComposer<IOException> 
     
     @Override
     public void addField(ObjectReference di, Map<String, Object> obj) throws IOException {
-        // Maps would need special handling in TOON
-        throw new UnsupportedOperationException("Direct Map serialization not fully supported in TOON format");
+        throw new UnsupportedOperationException("Direct Map serialization not supported in TOON format");
     }
     
     @Override
     public void addField(ObjectReference di, List<Object> obj) throws IOException {
-        // Lists would need special handling in TOON
-        throw new UnsupportedOperationException("Direct List serialization not fully supported in TOON format");
+        throw new UnsupportedOperationException("Direct List serialization not supported in TOON format");
     }
     
     @Override
     public void addField(ObjectReference di, Object obj) throws IOException {
-        // Generic objects would need special handling in TOON
-        throw new UnsupportedOperationException("Direct Object serialization not fully supported in TOON format");
+        throw new UnsupportedOperationException("Direct Object serialization not supported in TOON format");
     }
     
     @Override
