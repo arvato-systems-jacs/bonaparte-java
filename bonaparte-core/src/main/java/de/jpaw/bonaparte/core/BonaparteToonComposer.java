@@ -632,7 +632,57 @@ public class BonaparteToonComposer extends AbstractMessageComposer<IOException> 
     
     @Override
     public void addField(ObjectReference di, List<Object> obj) throws IOException {
-        throw new UnsupportedOperationException("Direct List serialization not supported in TOON format");
+        if (obj == null) {
+            writeNull(di);
+            return;
+        }
+        
+        // Serialize List similar to array format: key[N]: value1,value2,...
+        writeIndent();
+        writeKey(di.getName());
+        out.append('[');
+        out.append(Integer.toString(obj.size()));
+        out.append(']');
+        out.append(':');
+        
+        if (obj.size() > 0) {
+            out.append(' ');
+            boolean first = true;
+            for (Object element : obj) {
+                if (!first) {
+                    out.append(',');
+                }
+                writeListElement(element);
+                first = false;
+            }
+        }
+        newLine();
+    }
+    
+    /**
+     * Writes a single element from a List.
+     * Handles primitives, strings, numbers, booleans, and null.
+     */
+    protected void writeListElement(Object element) throws IOException {
+        if (element == null) {
+            out.append("null");
+        } else if (element instanceof String) {
+            writeQuotedString((String) element);
+        } else if (element instanceof Boolean) {
+            out.append(element.toString());
+        } else if (element instanceof Number) {
+            // Format numbers properly
+            if (element instanceof Double || element instanceof Float) {
+                out.append(formatNumber(BigDecimal.valueOf(((Number) element).doubleValue())));
+            } else {
+                out.append(element.toString());
+            }
+        } else if (element instanceof Character) {
+            writeQuotedString(element.toString());
+        } else {
+            // For other objects, convert to string and quote
+            writeQuotedString(element.toString());
+        }
     }
     
     @Override

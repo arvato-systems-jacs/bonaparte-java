@@ -79,8 +79,13 @@ public class ToonComposerTest {
         System.out.println("List field result:");
         System.out.println(result);
         
-        // Verify basic structure
+        // Verify TOON format: varList[4]: value1,value2,...
         Assertions.assertTrue(result.contains("text:"));
+        Assertions.assertTrue(result.contains("varList[4]:"));
+        Assertions.assertTrue(result.contains("42"));
+        Assertions.assertTrue(result.contains("3.14"));
+        Assertions.assertTrue(result.contains("\"x\""));
+        Assertions.assertTrue(result.contains("\"Hello, world\""));
     }
     
     @Test
@@ -241,6 +246,50 @@ public class ToonComposerTest {
         
         Assertions.assertNotNull(result);
         Assertions.assertTrue(result.contains("\"test via helper\""));
+    }
+    
+    @Test
+    public void testEmptyList() throws Exception {
+        JsonFieldTest t = new JsonFieldTest();
+        t.setText("test");
+        t.setVarList(new ArrayList<Object>());
+        
+        StringBuilder sb = new StringBuilder();
+        BonaparteToonComposer composer = new BonaparteToonComposer(sb);
+        composer.writeRecord(t);
+        
+        String result = sb.toString();
+        System.out.println("Empty list result:");
+        System.out.println(result);
+        
+        // Verify empty list format: varList[0]:
+        Assertions.assertTrue(result.contains("varList[0]:"));
+    }
+    
+    @Test
+    public void testListWithNull() throws Exception {
+        JsonFieldTest t = new JsonFieldTest();
+        t.setText("test");
+        
+        List<Object> l = new ArrayList<Object>();
+        l.add("first");
+        l.add(null);
+        l.add("last");
+        t.setVarList(l);
+        
+        StringBuilder sb = new StringBuilder();
+        BonaparteToonComposer composer = new BonaparteToonComposer(sb);
+        composer.writeRecord(t);
+        
+        String result = sb.toString();
+        System.out.println("List with null result:");
+        System.out.println(result);
+        
+        // Verify list contains null
+        Assertions.assertTrue(result.contains("varList[3]:"));
+        Assertions.assertTrue(result.contains("null"));
+        Assertions.assertTrue(result.contains("\"first\""));
+        Assertions.assertTrue(result.contains("\"last\""));
     }
     
     @Test
