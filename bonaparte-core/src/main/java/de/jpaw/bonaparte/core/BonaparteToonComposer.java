@@ -661,7 +661,7 @@ public class BonaparteToonComposer extends AbstractMessageComposer<IOException> 
     
     /**
      * Writes a single element from a List.
-     * Handles primitives, strings, numbers, booleans, and null.
+     * Handles primitives, strings, numbers, booleans, characters, and null.
      */
     protected void writeListElement(Object element) throws IOException {
         if (element == null) {
@@ -672,8 +672,10 @@ public class BonaparteToonComposer extends AbstractMessageComposer<IOException> 
             out.append(element.toString());
         } else if (element instanceof Number) {
             // Format numbers properly
-            if (element instanceof Double || element instanceof Float) {
-                out.append(formatNumber(BigDecimal.valueOf(((Number) element).doubleValue())));
+            if (element instanceof Float) {
+                out.append(formatNumber(BigDecimal.valueOf(((Float) element).floatValue())));
+            } else if (element instanceof Double) {
+                out.append(formatNumber(BigDecimal.valueOf(((Double) element).doubleValue())));
             } else {
                 out.append(element.toString());
             }
