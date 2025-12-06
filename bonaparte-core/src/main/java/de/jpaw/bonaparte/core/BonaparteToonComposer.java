@@ -189,12 +189,17 @@ public class BonaparteToonComposer extends AbstractMessageComposer<IOException> 
      * Removes trailing zeros after decimal point.
      */
     protected String formatNumber(BigDecimal value) {
-        String plain = value.stripTrailingZeros().toPlainString();
-        // Remove trailing .0 for integers
-        if (plain.endsWith(".0")) {
-            return plain.substring(0, plain.length() - 2);
+        return stripTrailingZero(value.stripTrailingZeros().toPlainString());
+    }
+    
+    /**
+     * Strips trailing ".0" from number strings.
+     */
+    protected String stripTrailingZero(String value) {
+        if (value.endsWith(".0")) {
+            return value.substring(0, value.length() - 2);
         }
-        return plain;
+        return value;
     }
     
     @Override
@@ -356,11 +361,8 @@ public class BonaparteToonComposer extends AbstractMessageComposer<IOException> 
     
     @Override
     public void addField(BasicNumericElementaryDataItem di, float f) throws IOException {
-        String value = Float.toString(f);
-        // Remove trailing .0 for cleaner output
-        if (value.endsWith(".0")) {
-            value = value.substring(0, value.length() - 2);
-        }
+        // Use BigDecimal to ensure plain format without scientific notation
+        String value = formatNumber(BigDecimal.valueOf(f));
         if (inArray) {
             if (arrayElementCount > 0) {
                 out.append(',');
@@ -471,7 +473,7 @@ public class BonaparteToonComposer extends AbstractMessageComposer<IOException> 
         if (inArray) {
             // Array of objects - not yet fully implemented
             // Would need list item format: "- " prefix
-            throw new UnsupportedOperationException("Arrays of objects not yet fully supported in Toon format");
+            throw new UnsupportedOperationException("Arrays of objects not yet fully supported in TOON format");
         } else {
             writeIndent();
             writeKey(di.getName());
@@ -627,19 +629,19 @@ public class BonaparteToonComposer extends AbstractMessageComposer<IOException> 
     @Override
     public void addField(ObjectReference di, Map<String, Object> obj) throws IOException {
         // Maps would need special handling in TOON
-        throw new UnsupportedOperationException("Direct Map serialization not fully supported in Toon format");
+        throw new UnsupportedOperationException("Direct Map serialization not fully supported in TOON format");
     }
     
     @Override
     public void addField(ObjectReference di, List<Object> obj) throws IOException {
         // Lists would need special handling in TOON
-        throw new UnsupportedOperationException("Direct List serialization not fully supported in Toon format");
+        throw new UnsupportedOperationException("Direct List serialization not fully supported in TOON format");
     }
     
     @Override
     public void addField(ObjectReference di, Object obj) throws IOException {
         // Generic objects would need special handling in TOON
-        throw new UnsupportedOperationException("Direct Object serialization not fully supported in Toon format");
+        throw new UnsupportedOperationException("Direct Object serialization not fully supported in TOON format");
     }
     
     @Override
