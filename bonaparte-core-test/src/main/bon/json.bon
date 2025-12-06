@@ -20,6 +20,12 @@ package jsonTest {
         Time(3)             t3;
     }
 
+    final class TestD {
+        Unicode(20)         text;
+        Day                 d0;
+        Day                 d3;
+    }
+
     class TestSimple {
         int                 num;
         Unicode(20)         text;

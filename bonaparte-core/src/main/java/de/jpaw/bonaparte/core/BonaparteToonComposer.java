@@ -49,27 +49,27 @@ import de.jpaw.util.ByteBuilder;
  * This class generates TOON (Token-Oriented Object Notation) output.
  * TOON is a line-oriented, indentation-based text format that encodes the JSON data model
  * with explicit structure and minimal quoting.
- * 
+ *
  * See https://github.com/toon-format/toon for the specification.
- * 
+ *
  * Key features of this implementation:
  * - Strings are always quoted (as per requirement)
  * - Objects use indentation instead of braces
  * - Arrays declare their length with bracket notation
  * - Numbers are output in plain decimal form (no scientific notation)
  * - Date/time types are formatted as ISO-8601 strings
- * 
+ *
  * @author Michael Bischoff (jpaw.de)
  */
 public class BonaparteToonComposer extends AbstractMessageComposer<IOException> {
     private static final Logger LOGGER = LoggerFactory.getLogger(BonaparteToonComposer.class);
-    
+
     // ISO-8601 formatters for temporal types
     protected static final DateTimeFormatter LOCAL_DATE_ISO = DateTimeFormatter.ISO_LOCAL_DATE;
     protected static final DateTimeFormatter LOCAL_TIME_ISO = DateTimeFormatter.ISO_LOCAL_TIME;
     protected static final DateTimeFormatter LOCAL_DATETIME_ISO = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
     protected static final DateTimeFormatter INSTANT_ISO = DateTimeFormatter.ISO_INSTANT;
-    
+
     protected final Appendable out;
     protected final JsonEscaper jsonEscaper;
     protected int indentLevel = 0;
@@ -77,32 +77,32 @@ public class BonaparteToonComposer extends AbstractMessageComposer<IOException> 
     protected String currentClass = "N/A";
     protected boolean writeEnumOrdinals = true;
     protected boolean writeEnumTokens = true;
-    
+
     // Track whether we're in an array context
     protected boolean inArray = false;
     protected int arrayElementCount = 0;
     protected int expectedArrayElements = 0;
-    
+
     public BonaparteToonComposer(Appendable out) {
         this(out, 2);
     }
-    
+
     public BonaparteToonComposer(Appendable out, int indentSize) {
         this.out = out;
         this.indentSize = indentSize;
         this.jsonEscaper = new BonaparteJsonEscaper(out);
     }
-    
+
     public BonaparteToonComposer(Appendable out, JsonEscaper jsonEscaper) {
         this(out, 2, jsonEscaper);
     }
-    
+
     public BonaparteToonComposer(Appendable out, int indentSize, JsonEscaper jsonEscaper) {
         this.out = out;
         this.indentSize = indentSize;
         this.jsonEscaper = jsonEscaper;
     }
-    
+
     /**
      * Converts a BonaCustom object to TOON string.
      */
@@ -119,7 +119,7 @@ public class BonaparteToonComposer extends AbstractMessageComposer<IOException> 
         }
         return buff.toString();
     }
-    
+
     /**
      * Writes indentation for the current level.
      */
@@ -128,14 +128,14 @@ public class BonaparteToonComposer extends AbstractMessageComposer<IOException> 
             out.append(' ');
         }
     }
-    
+
     /**
      * Writes a newline.
      */
     protected void newLine() throws IOException {
         out.append('\n');
     }
-    
+
     /**
      * Writes a quoted string, always using quotes as per specification.
      * Escapes special characters: \, ", newline, carriage return, tab.
@@ -145,11 +145,9 @@ public class BonaparteToonComposer extends AbstractMessageComposer<IOException> 
             out.append("null");
             return;
         }
-        out.append('"');
         jsonEscaper.outputUnicodeWithControls(s);
-        out.append('"');
     }
-    
+
     /**
      * Helper method to write a string value (always quoted).
      * Handles both array and non-array contexts.
@@ -169,7 +167,7 @@ public class BonaparteToonComposer extends AbstractMessageComposer<IOException> 
             newLine();
         }
     }
-    
+
     /**
      * Writes a key followed by colon.
      */
@@ -183,7 +181,7 @@ public class BonaparteToonComposer extends AbstractMessageComposer<IOException> 
         }
         out.append(':');
     }
-    
+
     /**
      * Check if a key needs quoting.
      */
@@ -203,7 +201,7 @@ public class BonaparteToonComposer extends AbstractMessageComposer<IOException> 
         }
         return false;
     }
-    
+
     /**
      * Formats a number in plain decimal format (no scientific notation).
      * Removes trailing zeros after decimal point.
@@ -211,7 +209,7 @@ public class BonaparteToonComposer extends AbstractMessageComposer<IOException> 
     protected String formatNumber(BigDecimal value) {
         return stripTrailingZero(value.stripTrailingZeros().toPlainString());
     }
-    
+
     /**
      * Strips trailing ".0" from number strings.
      */
@@ -221,39 +219,39 @@ public class BonaparteToonComposer extends AbstractMessageComposer<IOException> 
         }
         return value;
     }
-    
+
     @Override
     public void writeObject(BonaCustom o) throws IOException {
         objectOutSub(StaticMeta.OUTER_BONAPORTABLE, o);
     }
-    
+
     @Override
     public void startTransmission() throws IOException {
         // Root array format: [N]:
         // We'll track this in writeTransmission
     }
-    
+
     @Override
     public void startRecord() throws IOException {
         // No-op for individual records
     }
-    
+
     @Override
     public void startObject(ObjectReference di, BonaCustom obj) throws IOException {
         // In TOON, objects don't have explicit delimiters, just indentation
         // The field name has already been written by addField
     }
-    
+
     @Override
     public void writeSuperclassSeparator() throws IOException {
         // No separator needed in TOON
     }
-    
+
     @Override
     public void terminateObject(ObjectReference di, BonaCustom obj) throws IOException {
         // No closing delimiter needed
     }
-    
+
     @Override
     public void startArray(FieldDefinition di, int currentMembers, int sizeOfElement) throws IOException {
         // Write array header: key[N]:
@@ -263,19 +261,19 @@ public class BonaparteToonComposer extends AbstractMessageComposer<IOException> 
         out.append(Integer.toString(currentMembers));
         out.append(']');
         out.append(':');
-        
+
         if (currentMembers > 0) {
             // For inline primitive arrays
             out.append(' ');
         } else {
             newLine();
         }
-        
+
         inArray = true;
         arrayElementCount = 0;
         expectedArrayElements = currentMembers;
     }
-    
+
     @Override
     public void startMap(FieldDefinition di, int currentMembers) throws IOException {
         // Maps are treated as objects in TOON
@@ -284,12 +282,12 @@ public class BonaparteToonComposer extends AbstractMessageComposer<IOException> 
         newLine();
         indentLevel++;
     }
-    
+
     @Override
     public void terminateMap() throws IOException {
         indentLevel--;
     }
-    
+
     @Override
     public void terminateArray() throws IOException {
         if (arrayElementCount > 0 && expectedArrayElements > 0) {
@@ -300,24 +298,24 @@ public class BonaparteToonComposer extends AbstractMessageComposer<IOException> 
         arrayElementCount = 0;
         expectedArrayElements = 0;
     }
-    
+
     @Override
     public void terminateRecord() throws IOException {
         // TOON documents don't have a trailing newline
     }
-    
+
     @Override
     public void terminateTransmission() throws IOException {
         // No closing delimiter for root array
     }
-    
+
     @Override
     public void writeRecord(BonaCustom o) throws IOException {
         startRecord();
         addField(StaticMeta.OUTER_BONAPORTABLE, o);
         terminateRecord();
     }
-    
+
     @Override
     public void writeNull(FieldDefinition di) throws IOException {
         if (inArray) {
@@ -333,12 +331,12 @@ public class BonaparteToonComposer extends AbstractMessageComposer<IOException> 
             newLine();
         }
     }
-    
+
     @Override
     public void writeNullCollection(FieldDefinition di) throws IOException {
         writeNull(di);
     }
-    
+
     @Override
     public void addField(MiscElementaryDataItem di, boolean b) throws IOException {
         if (inArray) {
@@ -355,12 +353,12 @@ public class BonaparteToonComposer extends AbstractMessageComposer<IOException> 
             newLine();
         }
     }
-    
+
     @Override
     public void addField(MiscElementaryDataItem di, char c) throws IOException {
         writeStringValue(di, String.valueOf(c));
     }
-    
+
     @Override
     public void addField(BasicNumericElementaryDataItem di, double d) throws IOException {
         String value = formatNumber(BigDecimal.valueOf(d));
@@ -378,7 +376,7 @@ public class BonaparteToonComposer extends AbstractMessageComposer<IOException> 
             newLine();
         }
     }
-    
+
     @Override
     public void addField(BasicNumericElementaryDataItem di, float f) throws IOException {
         // Use BigDecimal to ensure plain format without scientific notation
@@ -397,27 +395,27 @@ public class BonaparteToonComposer extends AbstractMessageComposer<IOException> 
             newLine();
         }
     }
-    
+
     @Override
     public void addField(BasicNumericElementaryDataItem di, byte n) throws IOException {
         addIntField(di.getName(), n);
     }
-    
+
     @Override
     public void addField(BasicNumericElementaryDataItem di, short n) throws IOException {
         addIntField(di.getName(), n);
     }
-    
+
     @Override
     public void addField(BasicNumericElementaryDataItem di, int n) throws IOException {
         addIntField(di.getName(), n);
     }
-    
+
     @Override
     public void addField(BasicNumericElementaryDataItem di, long n) throws IOException {
         addLongField(di.getName(), n);
     }
-    
+
     protected void addIntField(String name, int value) throws IOException {
         if (inArray) {
             if (arrayElementCount > 0) {
@@ -433,7 +431,7 @@ public class BonaparteToonComposer extends AbstractMessageComposer<IOException> 
             newLine();
         }
     }
-    
+
     protected void addLongField(String name, long value) throws IOException {
         if (inArray) {
             if (arrayElementCount > 0) {
@@ -449,7 +447,7 @@ public class BonaparteToonComposer extends AbstractMessageComposer<IOException> 
             newLine();
         }
     }
-    
+
     @Override
     public void addField(AlphanumericElementaryDataItem di, String s) throws IOException {
         if (inArray) {
@@ -466,30 +464,30 @@ public class BonaparteToonComposer extends AbstractMessageComposer<IOException> 
             newLine();
         }
     }
-    
+
     protected void objectOutSub(ObjectReference di, BonaCustom obj) throws IOException {
         String previousClass = currentClass;
         currentClass = di.getName();
         boolean wasInArray = inArray;
         inArray = false;
-        
+
         startObject(di, obj);
         indentLevel++;
         obj.serializeSub(this);
         indentLevel--;
         terminateObject(di, obj);
-        
+
         currentClass = previousClass;
         inArray = wasInArray;
     }
-    
+
     @Override
     public void addField(ObjectReference di, BonaCustom obj) throws IOException {
         if (obj == null) {
             writeNull(di);
             return;
         }
-        
+
         if (inArray) {
             // Arrays of objects not supported - would require list item format with "- " prefix
             throw new UnsupportedOperationException("Arrays of objects not supported in TOON format");
@@ -500,12 +498,12 @@ public class BonaparteToonComposer extends AbstractMessageComposer<IOException> 
             objectOutSub(di, obj);
         }
     }
-    
+
     @Override
     public void addField(MiscElementaryDataItem di, UUID n) throws IOException {
         writeStringValue(di, n == null ? null : n.toString());
     }
-    
+
     @Override
     public void addField(BinaryElementaryDataItem di, ByteArray b) throws IOException {
         if (b == null) {
@@ -517,7 +515,7 @@ public class BonaparteToonComposer extends AbstractMessageComposer<IOException> 
             writeStringValue(di, s);
         }
     }
-    
+
     @Override
     public void addField(BinaryElementaryDataItem di, byte[] b) throws IOException {
         if (b == null) {
@@ -529,7 +527,7 @@ public class BonaparteToonComposer extends AbstractMessageComposer<IOException> 
             writeStringValue(di, s);
         }
     }
-    
+
     @Override
     public void addField(BasicNumericElementaryDataItem di, BigInteger n) throws IOException {
         if (n == null) {
@@ -551,7 +549,7 @@ public class BonaparteToonComposer extends AbstractMessageComposer<IOException> 
             }
         }
     }
-    
+
     @Override
     public void addField(NumericElementaryDataItem di, BigDecimal n) throws IOException {
         if (n == null) {
@@ -573,27 +571,27 @@ public class BonaparteToonComposer extends AbstractMessageComposer<IOException> 
             }
         }
     }
-    
+
     @Override
     public void addField(TemporalElementaryDataItem di, LocalDate t) throws IOException {
         writeStringValue(di, t == null ? null : t.format(LOCAL_DATE_ISO));
     }
-    
+
     @Override
     public void addField(TemporalElementaryDataItem di, LocalDateTime t) throws IOException {
         writeStringValue(di, t == null ? null : t.format(LOCAL_DATETIME_ISO));
     }
-    
+
     @Override
     public void addField(TemporalElementaryDataItem di, LocalTime t) throws IOException {
         writeStringValue(di, t == null ? null : t.format(LOCAL_TIME_ISO));
     }
-    
+
     @Override
     public void addField(TemporalElementaryDataItem di, Instant t) throws IOException {
         writeStringValue(di, t == null ? null : t.toString());  // Uses ISO_INSTANT format
     }
-    
+
     @Override
     public void addEnum(EnumDataItem di, BasicNumericElementaryDataItem ord, BonaNonTokenizableEnum n) throws IOException {
         if (n == null) {
@@ -623,34 +621,38 @@ public class BonaparteToonComposer extends AbstractMessageComposer<IOException> 
             }
         }
     }
-    
+
     @Override
     public void addEnum(EnumDataItem di, AlphanumericElementaryDataItem token, BonaTokenizableEnum n) throws IOException {
         writeStringValue(di, n == null ? null : (writeEnumTokens ? n.getToken() : n.name()));
     }
-    
+
     @Override
     public void addEnum(XEnumDataItem di, AlphanumericElementaryDataItem token, XEnum<?> n) throws IOException {
         writeStringValue(di, n == null ? null : (writeEnumTokens ? n.getToken() : n.name()));
     }
-    
+
     @Override
     public boolean addExternal(ObjectReference di, Object obj) throws IOException {
         return false; // perform conversion by default
     }
-    
+
     @Override
     public void addField(ObjectReference di, Map<String, Object> obj) throws IOException {
+        if (obj == null) {
+            writeNull(di);
+            return;
+        }
         throw new UnsupportedOperationException("Direct Map serialization not supported in TOON format");
     }
-    
+
     @Override
     public void addField(ObjectReference di, List<Object> obj) throws IOException {
         if (obj == null) {
             writeNull(di);
             return;
         }
-        
+
         // Serialize List similar to array format: key[N]: value1,value2,...
         writeIndent();
         writeKey(di.getName());
@@ -658,7 +660,7 @@ public class BonaparteToonComposer extends AbstractMessageComposer<IOException> 
         out.append(Integer.toString(obj.size()));
         out.append(']');
         out.append(':');
-        
+
         if (obj.size() > 0) {
             out.append(' ');
             boolean first = true;
@@ -672,7 +674,7 @@ public class BonaparteToonComposer extends AbstractMessageComposer<IOException> 
         }
         newLine();
     }
-    
+
     /**
      * Writes a single element from a List.
      * Handles primitives, strings, numbers, booleans, characters, and null.
@@ -700,12 +702,16 @@ public class BonaparteToonComposer extends AbstractMessageComposer<IOException> 
             writeQuotedString(element.toString());
         }
     }
-    
+
     @Override
     public void addField(ObjectReference di, Object obj) throws IOException {
+        if (obj == null) {
+            writeNull(di);
+            return;
+        }
         throw new UnsupportedOperationException("Direct Object serialization not supported in TOON format");
     }
-    
+
     @Override
     public <S extends Enum<S>> void addField(NumericEnumSetDataItem di, BonaByteEnumSet<S> n) throws IOException {
         if (n == null) {
@@ -716,7 +722,7 @@ public class BonaparteToonComposer extends AbstractMessageComposer<IOException> 
             writeEnumSetAsArray(di, n.getBitmap(), di.getBaseEnumset().getBaseEnum());
         }
     }
-    
+
     @Override
     public <S extends Enum<S>> void addField(NumericEnumSetDataItem di, BonaShortEnumSet<S> n) throws IOException {
         if (n == null) {
@@ -727,7 +733,7 @@ public class BonaparteToonComposer extends AbstractMessageComposer<IOException> 
             writeEnumSetAsArray(di, n.getBitmap(), di.getBaseEnumset().getBaseEnum());
         }
     }
-    
+
     @Override
     public <S extends Enum<S>> void addField(NumericEnumSetDataItem di, BonaIntEnumSet<S> n) throws IOException {
         if (n == null) {
@@ -738,7 +744,7 @@ public class BonaparteToonComposer extends AbstractMessageComposer<IOException> 
             writeEnumSetAsArray(di, n.getBitmap(), di.getBaseEnumset().getBaseEnum());
         }
     }
-    
+
     @Override
     public <S extends Enum<S>> void addField(NumericEnumSetDataItem di, BonaLongEnumSet<S> n) throws IOException {
         if (n == null) {
@@ -749,18 +755,18 @@ public class BonaparteToonComposer extends AbstractMessageComposer<IOException> 
             writeEnumSetAsArray(di, n.getBitmap(), di.getBaseEnumset().getBaseEnum());
         }
     }
-    
+
     protected void writeEnumSetAsArray(FieldDefinition di, long bitmap, EnumDefinition edi) throws IOException {
         // Count set bits
         int count = Long.bitCount(bitmap);
-        
+
         writeIndent();
         writeKey(di.getName());
         out.append('[');
         out.append(Integer.toString(count));
         out.append(']');
         out.append(':');
-        
+
         if (count > 0) {
             out.append(' ');
             List<String> ids = edi.getIds();
@@ -781,7 +787,7 @@ public class BonaparteToonComposer extends AbstractMessageComposer<IOException> 
         }
         newLine();
     }
-    
+
     @Override
     public <S extends TokenizableEnum> void addField(AlphanumericEnumSetDataItem di, BonaStringEnumSet<S> e) throws IOException {
         if (e == null) {
@@ -797,7 +803,7 @@ public class BonaparteToonComposer extends AbstractMessageComposer<IOException> 
             out.append(Integer.toString(e.size()));
             out.append(']');
             out.append(':');
-            
+
             if (e.size() > 0) {
                 out.append(' ');
                 boolean first = true;
@@ -812,12 +818,16 @@ public class BonaparteToonComposer extends AbstractMessageComposer<IOException> 
             newLine();
         }
     }
-    
+
     @Override
     public <S extends TokenizableEnum> void addField(XEnumSetDataItem di, BonaStringEnumSet<S> e) throws IOException {
-        addField((AlphanumericEnumSetDataItem) di, e);
+        if (e == null) {
+            writeNull(di);
+            return;
+        }
+        throw new UnsupportedOperationException("XEnumSetDataItem not supported in TOON format");
     }
-    
+
     @Override
     public <F extends FixedPointBase<F>> void addField(BasicNumericElementaryDataItem di, F n) throws IOException {
         if (n == null) {
@@ -839,20 +849,20 @@ public class BonaparteToonComposer extends AbstractMessageComposer<IOException> 
             }
         }
     }
-    
+
     // Getters and setters for configuration
     public boolean isWriteEnumOrdinals() {
         return writeEnumOrdinals;
     }
-    
+
     public void setWriteEnumOrdinals(boolean writeEnumOrdinals) {
         this.writeEnumOrdinals = writeEnumOrdinals;
     }
-    
+
     public boolean isWriteEnumTokens() {
         return writeEnumTokens;
     }
-    
+
     public void setWriteEnumTokens(boolean writeEnumTokens) {
         this.writeEnumTokens = writeEnumTokens;
     }
