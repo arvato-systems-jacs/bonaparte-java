@@ -423,35 +423,21 @@ public class ToonComposerTest {
         System.out.println("Nested object with lists result:");
         System.out.println(result);
         
-        // Verify the expected output structure
-        // Expected:
-        // user:
-        //   id: 123
-        //   name: "Ada"
-        //   tags[2]: "reading","gaming"
-        //   active: true
-        //   preferences[0]:
+        // Expected output (with platform-agnostic line separator)
+        String expected = String.join(System.lineSeparator(),
+            "user:",
+            "  id: 123",
+            "  name: \"Ada\"",
+            "  tags[2]: \"reading\",\"gaming\"",
+            "  active: true",
+            "  preferences[0]:"
+        );
         
-        Assertions.assertTrue(result.contains("user:"), "Should contain user field");
-        Assertions.assertTrue(result.contains("id: 123"), "Should contain id: 123");
-        Assertions.assertTrue(result.contains("name: \"Ada\""), "Should contain name: \"Ada\"");
-        Assertions.assertTrue(result.contains("tags[2]:"), "Should contain tags[2]:");
-        Assertions.assertTrue(result.contains("\"reading\""), "Should contain \"reading\"");
-        Assertions.assertTrue(result.contains("\"gaming\""), "Should contain \"gaming\"");
-        Assertions.assertTrue(result.contains("active: true"), "Should contain active: true");
-        Assertions.assertTrue(result.contains("preferences[0]:"), "Should contain preferences[0]:");
+        // Normalize line endings for comparison (handles Windows \r\n, Unix \n, Mac \r)
+        String normalizedResult = result.replace("\r\n", "\n").replace("\r", "\n");
+        String normalizedExpected = expected.replace("\r\n", "\n").replace("\r", "\n");
         
-        // Verify indentation - the user object fields should be indented
-        String[] lines = result.split("\n");
-        boolean foundUser = false;
-        for (String line : lines) {
-            if (line.trim().equals("user:")) {
-                foundUser = true;
-            } else if (foundUser && line.contains("id:")) {
-                // Check that the line starts with spaces (indented)
-                Assertions.assertTrue(line.startsWith("  "), "User fields should be indented");
-                break;
-            }
-        }
+        Assertions.assertEquals(normalizedExpected, normalizedResult, 
+            "TOON output should exactly match expected format");
     }
 }
