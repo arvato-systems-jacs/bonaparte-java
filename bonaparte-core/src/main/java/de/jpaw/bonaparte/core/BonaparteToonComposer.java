@@ -151,6 +151,26 @@ public class BonaparteToonComposer extends AbstractMessageComposer<IOException> 
     }
     
     /**
+     * Helper method to write a string value (always quoted).
+     * Handles both array and non-array contexts.
+     */
+    protected void writeStringValue(FieldDefinition di, String value) throws IOException {
+        if (inArray) {
+            if (arrayElementCount > 0) {
+                out.append(',');
+            }
+            writeQuotedString(value);
+            arrayElementCount++;
+        } else {
+            writeIndent();
+            writeKey(di.getName());
+            out.append(' ');
+            writeQuotedString(value);
+            newLine();
+        }
+    }
+    
+    /**
      * Writes a key followed by colon.
      */
     protected void writeKey(String key) throws IOException {
@@ -338,19 +358,7 @@ public class BonaparteToonComposer extends AbstractMessageComposer<IOException> 
     
     @Override
     public void addField(MiscElementaryDataItem di, char c) throws IOException {
-        if (inArray) {
-            if (arrayElementCount > 0) {
-                out.append(',');
-            }
-            writeQuotedString(String.valueOf(c));
-            arrayElementCount++;
-        } else {
-            writeIndent();
-            writeKey(di.getName());
-            out.append(' ');
-            writeQuotedString(String.valueOf(c));
-            newLine();
-        }
+        writeStringValue(di, String.valueOf(c));
     }
     
     @Override
@@ -495,20 +503,7 @@ public class BonaparteToonComposer extends AbstractMessageComposer<IOException> 
     
     @Override
     public void addField(MiscElementaryDataItem di, UUID n) throws IOException {
-        String formatted = n == null ? null : n.toString();
-        if (inArray) {
-            if (arrayElementCount > 0) {
-                out.append(',');
-            }
-            writeQuotedString(formatted);
-            arrayElementCount++;
-        } else {
-            writeIndent();
-            writeKey(di.getName());
-            out.append(' ');
-            writeQuotedString(formatted);
-            newLine();
-        }
+        writeStringValue(di, n == null ? null : n.toString());
     }
     
     @Override
@@ -519,19 +514,7 @@ public class BonaparteToonComposer extends AbstractMessageComposer<IOException> 
             ByteBuilder tmp = new ByteBuilder((b.length() * 2) + 4, null);
             Base64.encodeToByte(tmp, b.getBytes(), 0, b.length());
             String s = new String(tmp.getCurrentBuffer(), 0, tmp.length());
-            if (inArray) {
-                if (arrayElementCount > 0) {
-                    out.append(',');
-                }
-                writeQuotedString(s);
-                arrayElementCount++;
-            } else {
-                writeIndent();
-                writeKey(di.getName());
-                out.append(' ');
-                writeQuotedString(s);
-                newLine();
-            }
+            writeStringValue(di, s);
         }
     }
     
@@ -543,19 +526,7 @@ public class BonaparteToonComposer extends AbstractMessageComposer<IOException> 
             ByteBuilder tmp = new ByteBuilder((b.length * 2) + 4, null);
             Base64.encodeToByte(tmp, b, 0, b.length);
             String s = new String(tmp.getCurrentBuffer(), 0, tmp.length());
-            if (inArray) {
-                if (arrayElementCount > 0) {
-                    out.append(',');
-                }
-                writeQuotedString(s);
-                arrayElementCount++;
-            } else {
-                writeIndent();
-                writeKey(di.getName());
-                out.append(' ');
-                writeQuotedString(s);
-                newLine();
-            }
+            writeStringValue(di, s);
         }
     }
     
@@ -605,74 +576,22 @@ public class BonaparteToonComposer extends AbstractMessageComposer<IOException> 
     
     @Override
     public void addField(TemporalElementaryDataItem di, LocalDate t) throws IOException {
-        String formatted = t == null ? null : t.format(LOCAL_DATE_ISO);
-        if (inArray) {
-            if (arrayElementCount > 0) {
-                out.append(',');
-            }
-            writeQuotedString(formatted);
-            arrayElementCount++;
-        } else {
-            writeIndent();
-            writeKey(di.getName());
-            out.append(' ');
-            writeQuotedString(formatted);
-            newLine();
-        }
+        writeStringValue(di, t == null ? null : t.format(LOCAL_DATE_ISO));
     }
     
     @Override
     public void addField(TemporalElementaryDataItem di, LocalDateTime t) throws IOException {
-        String formatted = t == null ? null : t.format(LOCAL_DATETIME_ISO);
-        if (inArray) {
-            if (arrayElementCount > 0) {
-                out.append(',');
-            }
-            writeQuotedString(formatted);
-            arrayElementCount++;
-        } else {
-            writeIndent();
-            writeKey(di.getName());
-            out.append(' ');
-            writeQuotedString(formatted);
-            newLine();
-        }
+        writeStringValue(di, t == null ? null : t.format(LOCAL_DATETIME_ISO));
     }
     
     @Override
     public void addField(TemporalElementaryDataItem di, LocalTime t) throws IOException {
-        String formatted = t == null ? null : t.format(LOCAL_TIME_ISO);
-        if (inArray) {
-            if (arrayElementCount > 0) {
-                out.append(',');
-            }
-            writeQuotedString(formatted);
-            arrayElementCount++;
-        } else {
-            writeIndent();
-            writeKey(di.getName());
-            out.append(' ');
-            writeQuotedString(formatted);
-            newLine();
-        }
+        writeStringValue(di, t == null ? null : t.format(LOCAL_TIME_ISO));
     }
     
     @Override
     public void addField(TemporalElementaryDataItem di, Instant t) throws IOException {
-        String formatted = t == null ? null : t.toString();  // Uses ISO_INSTANT format
-        if (inArray) {
-            if (arrayElementCount > 0) {
-                out.append(',');
-            }
-            writeQuotedString(formatted);
-            arrayElementCount++;
-        } else {
-            writeIndent();
-            writeKey(di.getName());
-            out.append(' ');
-            writeQuotedString(formatted);
-            newLine();
-        }
+        writeStringValue(di, t == null ? null : t.toString());  // Uses ISO_INSTANT format
     }
     
     @Override
@@ -707,38 +626,12 @@ public class BonaparteToonComposer extends AbstractMessageComposer<IOException> 
     
     @Override
     public void addEnum(EnumDataItem di, AlphanumericElementaryDataItem token, BonaTokenizableEnum n) throws IOException {
-        String value = n == null ? null : (writeEnumTokens ? n.getToken() : n.name());
-        if (inArray) {
-            if (arrayElementCount > 0) {
-                out.append(',');
-            }
-            writeQuotedString(value);
-            arrayElementCount++;
-        } else {
-            writeIndent();
-            writeKey(di.getName());
-            out.append(' ');
-            writeQuotedString(value);
-            newLine();
-        }
+        writeStringValue(di, n == null ? null : (writeEnumTokens ? n.getToken() : n.name()));
     }
     
     @Override
     public void addEnum(XEnumDataItem di, AlphanumericElementaryDataItem token, XEnum<?> n) throws IOException {
-        String value = n == null ? null : (writeEnumTokens ? n.getToken() : n.name());
-        if (inArray) {
-            if (arrayElementCount > 0) {
-                out.append(',');
-            }
-            writeQuotedString(value);
-            arrayElementCount++;
-        } else {
-            writeIndent();
-            writeKey(di.getName());
-            out.append(' ');
-            writeQuotedString(value);
-            newLine();
-        }
+        writeStringValue(di, n == null ? null : (writeEnumTokens ? n.getToken() : n.name()));
     }
     
     @Override
@@ -895,20 +788,7 @@ public class BonaparteToonComposer extends AbstractMessageComposer<IOException> 
             writeNull(di);
         } else if (writeEnumTokens) {
             // Write bitmap as a string
-            String bitmap = e.getBitmap();
-            if (inArray) {
-                if (arrayElementCount > 0) {
-                    out.append(',');
-                }
-                writeQuotedString(bitmap);
-                arrayElementCount++;
-            } else {
-                writeIndent();
-                writeKey(di.getName());
-                out.append(' ');
-                writeQuotedString(bitmap);
-                newLine();
-            }
+            writeStringValue(di, e.getBitmap());
         } else {
             // Write as array of enum names
             writeIndent();
