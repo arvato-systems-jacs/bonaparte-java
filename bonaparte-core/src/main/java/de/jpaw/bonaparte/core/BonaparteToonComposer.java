@@ -59,7 +59,7 @@ import de.jpaw.util.ByteBuilder;
  * - Numbers are output in plain decimal form (no scientific notation)
  * - Date/time types are formatted as ISO-8601 strings
  * 
- * @author Bonaparte Toon Composer Generator
+ * @author Michael Bischoff (jpaw.de)
  */
 public class BonaparteToonComposer extends AbstractMessageComposer<IOException> {
     private static final Logger LOGGER = LoggerFactory.getLogger(BonaparteToonComposer.class);
@@ -73,7 +73,7 @@ public class BonaparteToonComposer extends AbstractMessageComposer<IOException> 
     protected final Appendable out;
     protected final JsonEscaper jsonEscaper;
     protected int indentLevel = 0;
-    protected final int indentSize = 2;  // Default indent size in spaces
+    protected int indentSize = 2;  // Default indent size in spaces
     protected String currentClass = "N/A";
     protected boolean writeEnumOrdinals = true;
     protected boolean writeEnumTokens = true;
@@ -84,12 +84,22 @@ public class BonaparteToonComposer extends AbstractMessageComposer<IOException> 
     protected int expectedArrayElements = 0;
     
     public BonaparteToonComposer(Appendable out) {
+        this(out, 2);
+    }
+    
+    public BonaparteToonComposer(Appendable out, int indentSize) {
         this.out = out;
+        this.indentSize = indentSize;
         this.jsonEscaper = new BonaparteJsonEscaper(out);
     }
     
     public BonaparteToonComposer(Appendable out, JsonEscaper jsonEscaper) {
+        this(out, 2, jsonEscaper);
+    }
+    
+    public BonaparteToonComposer(Appendable out, int indentSize, JsonEscaper jsonEscaper) {
         this.out = out;
+        this.indentSize = indentSize;
         this.jsonEscaper = jsonEscaper;
     }
     
@@ -346,7 +356,11 @@ public class BonaparteToonComposer extends AbstractMessageComposer<IOException> 
     
     @Override
     public void addField(BasicNumericElementaryDataItem di, float f) throws IOException {
-        String value = formatNumber(BigDecimal.valueOf(f));
+        String value = Float.toString(f);
+        // Remove trailing .0 for cleaner output
+        if (value.endsWith(".0")) {
+            value = value.substring(0, value.length() - 2);
+        }
         if (inArray) {
             if (arrayElementCount > 0) {
                 out.append(',');
@@ -457,7 +471,7 @@ public class BonaparteToonComposer extends AbstractMessageComposer<IOException> 
         if (inArray) {
             // Array of objects - not yet fully implemented
             // Would need list item format: "- " prefix
-            throw new IOException("Arrays of objects not yet fully supported in Toon format");
+            throw new UnsupportedOperationException("Arrays of objects not yet fully supported in Toon format");
         } else {
             writeIndent();
             writeKey(di.getName());
@@ -613,19 +627,19 @@ public class BonaparteToonComposer extends AbstractMessageComposer<IOException> 
     @Override
     public void addField(ObjectReference di, Map<String, Object> obj) throws IOException {
         // Maps would need special handling in TOON
-        throw new IOException("Direct Map serialization not fully supported in Toon format");
+        throw new UnsupportedOperationException("Direct Map serialization not fully supported in Toon format");
     }
     
     @Override
     public void addField(ObjectReference di, List<Object> obj) throws IOException {
         // Lists would need special handling in TOON
-        throw new IOException("Direct List serialization not fully supported in Toon format");
+        throw new UnsupportedOperationException("Direct List serialization not fully supported in Toon format");
     }
     
     @Override
     public void addField(ObjectReference di, Object obj) throws IOException {
         // Generic objects would need special handling in TOON
-        throw new IOException("Direct Object serialization not fully supported in Toon format");
+        throw new UnsupportedOperationException("Direct Object serialization not fully supported in Toon format");
     }
     
     @Override
