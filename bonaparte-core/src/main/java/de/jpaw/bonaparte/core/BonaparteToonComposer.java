@@ -169,6 +169,26 @@ public class BonaparteToonComposer extends AbstractMessageComposer<IOException> 
     }
 
     /**
+     * Helper method to write a string value (always unquoted).
+     * Handles both array and non-array contexts.
+     */
+    protected void writeUnquotedStringValue(FieldDefinition di, String value) throws IOException {
+        if (inArray) {
+            if (arrayElementCount > 0) {
+                out.append(',');
+            }
+            out.append(value);
+            arrayElementCount++;
+        } else {
+            writeIndent();
+            writeKey(di.getName());
+            out.append(' ');
+            out.append(value);
+            newLine();
+        }
+    }
+
+    /**
      * Writes a key followed by colon.
      */
     protected void writeKey(String key) throws IOException {
@@ -594,42 +614,18 @@ public class BonaparteToonComposer extends AbstractMessageComposer<IOException> 
 
     @Override
     public void addEnum(EnumDataItem di, BasicNumericElementaryDataItem ord, BonaNonTokenizableEnum n) throws IOException {
-        if (n == null) {
-            writeNull(di);
-        } else {
-            String value = writeEnumOrdinals ? Integer.toString(n.ordinal()) : n.name();
-            if (inArray) {
-                if (arrayElementCount > 0) {
-                    out.append(',');
-                }
-                if (writeEnumOrdinals) {
-                    out.append(value);
-                } else {
-                    writeQuotedString(value);
-                }
-                arrayElementCount++;
-            } else {
-                writeIndent();
-                writeKey(di.getName());
-                out.append(' ');
-                if (writeEnumOrdinals) {
-                    out.append(value);
-                } else {
-                    writeQuotedString(value);
-                }
-                newLine();
-            }
-        }
+        String value = n == null ? null : writeEnumOrdinals ? Integer.toString(n.ordinal()) : n.name();
+        writeUnquotedStringValue(di, value);
     }
 
     @Override
     public void addEnum(EnumDataItem di, AlphanumericElementaryDataItem token, BonaTokenizableEnum n) throws IOException {
-        writeStringValue(di, n == null ? null : (writeEnumTokens ? n.getToken() : n.name()));
+        writeUnquotedStringValue(di, n == null ? null : (writeEnumTokens ? n.getToken() : n.name()));
     }
 
     @Override
     public void addEnum(XEnumDataItem di, AlphanumericElementaryDataItem token, XEnum<?> n) throws IOException {
-        writeStringValue(di, n == null ? null : (writeEnumTokens ? n.getToken() : n.name()));
+        writeUnquotedStringValue(di, n == null ? null : (writeEnumTokens ? n.getToken() : n.name()));
     }
 
     @Override

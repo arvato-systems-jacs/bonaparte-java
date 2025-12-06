@@ -131,8 +131,8 @@ public class ToonComposerTest {
         System.out.println("Enum with tokens result:");
         System.out.println(result);
 
-        // Verify enum names/tokens are quoted strings
-        Assertions.assertTrue(result.contains("\""));
+        // Verify enum names/tokens are unquoted strings
+        Assertions.assertTrue(!result.contains("\""));
     }
 
     @Test
