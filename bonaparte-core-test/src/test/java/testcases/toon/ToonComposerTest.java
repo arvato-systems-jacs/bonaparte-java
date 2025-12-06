@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import org.junit.jupiter.api.Assertions;
@@ -13,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import de.jpaw.bonaparte.core.BonaparteToonComposer;
 import de.jpaw.bonaparte.pojos.jsonTest.ColorAlnum;
 import de.jpaw.bonaparte.pojos.jsonTest.ColorNum;
+import de.jpaw.bonaparte.pojos.jsonTest.Data;
 import de.jpaw.bonaparte.pojos.jsonTest.JsonEnumAndList;
 import de.jpaw.bonaparte.pojos.jsonTest.JsonFieldTest;
 import de.jpaw.bonaparte.pojos.jsonTest.TestD;
@@ -20,6 +22,7 @@ import de.jpaw.bonaparte.pojos.jsonTest.TestObj;
 import de.jpaw.bonaparte.pojos.jsonTest.TestSimple;
 import de.jpaw.bonaparte.pojos.jsonTest.TestT;
 import de.jpaw.bonaparte.pojos.jsonTest.TestTS;
+import de.jpaw.bonaparte.pojos.jsonTest.User;
 import de.jpaw.bonaparte.pojos.jsonTest.XColor;
 
 /**
@@ -390,5 +393,65 @@ public class ToonComposerTest {
         Assertions.assertTrue(tsResult.contains("2025-01-01T00:00:00"));
         Assertions.assertTrue(tResult.contains("12:00:00"));
         Assertions.assertTrue(simpleResult.contains("\"helper test\""));
+    }
+
+    @Test
+    public void testNestedObjectWithLists() throws Exception {
+        // Create User object with tags and preferences lists
+        User user = new User();
+        user.setId(123);
+        user.setName("Ada");
+        
+        List<String> tags = new ArrayList<>();
+        tags.add("reading");
+        tags.add("gaming");
+        user.setTags(tags);
+        
+        user.setActive(true);
+        user.setPreferences(new ArrayList<>()); // Empty list
+        
+        // Wrap in Data object
+        Data data = new Data();
+        data.setUser(user);
+        
+        // Serialize to TOON
+        StringBuilder sb = new StringBuilder();
+        BonaparteToonComposer composer = new BonaparteToonComposer(sb);
+        composer.writeRecord(data);
+        
+        String result = sb.toString();
+        System.out.println("Nested object with lists result:");
+        System.out.println(result);
+        
+        // Verify the expected output structure
+        // Expected:
+        // user:
+        //   id: 123
+        //   name: "Ada"
+        //   tags[2]: "reading","gaming"
+        //   active: true
+        //   preferences[0]:
+        
+        Assertions.assertTrue(result.contains("user:"), "Should contain user field");
+        Assertions.assertTrue(result.contains("id: 123"), "Should contain id: 123");
+        Assertions.assertTrue(result.contains("name: \"Ada\""), "Should contain name: \"Ada\"");
+        Assertions.assertTrue(result.contains("tags[2]:"), "Should contain tags[2]:");
+        Assertions.assertTrue(result.contains("\"reading\""), "Should contain \"reading\"");
+        Assertions.assertTrue(result.contains("\"gaming\""), "Should contain \"gaming\"");
+        Assertions.assertTrue(result.contains("active: true"), "Should contain active: true");
+        Assertions.assertTrue(result.contains("preferences[0]:"), "Should contain preferences[0]:");
+        
+        // Verify indentation - the user object fields should be indented
+        String[] lines = result.split("\n");
+        boolean foundUser = false;
+        for (String line : lines) {
+            if (line.trim().equals("user:")) {
+                foundUser = true;
+            } else if (foundUser && line.contains("id:")) {
+                // Check that the line starts with spaces (indented)
+                Assertions.assertTrue(line.startsWith("  "), "User fields should be indented");
+                break;
+            }
+        }
     }
 }
