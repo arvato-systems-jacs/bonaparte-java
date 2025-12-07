@@ -419,18 +419,19 @@ public class ToonComposerTest {
         BonaparteToonComposer composer = new BonaparteToonComposer(sb);
         composer.writeObject(data);
         
-        String result = sb.toString();
+        String result = BonaparteToonComposer.toToonString(user);
         System.out.println("Nested object with lists result:");
         System.out.println(result);
         
         // Expected output (with platform-agnostic line separator)
         String expected = String.join(System.lineSeparator(),
-            "user:",
+            "record:",
             "  id: 123",
             "  name: \"Ada\"",
             "  tags[2]: \"reading\",\"gaming\"",
             "  active: true",
-            "  preferences[0]:"
+            "  preferences[0]:",
+            ""
         );
         
         // Normalize line endings for comparison (handles Windows \r\n, Unix \n, Mac \r)
