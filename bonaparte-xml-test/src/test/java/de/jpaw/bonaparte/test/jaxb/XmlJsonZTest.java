@@ -113,6 +113,6 @@ public class XmlJsonZTest {
         assert(obj != null);
         System.out.println("Output is " + ToStringHelper.toStringML(obj));
         assert("world".equals(obj.getZ().get("hello")));
-        Assertions.assertEquals(obj, objIn);
+        Assertions.assertEquals(objIn, obj);
     }
 }

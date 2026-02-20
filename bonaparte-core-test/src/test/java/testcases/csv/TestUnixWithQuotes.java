@@ -36,7 +36,7 @@ public class TestUnixWithQuotes {
         // now parse
         StringCSVParser p = new StringCSVParser(cfg, expectedOutput);
         UnixPasswd parsedOne = p.readObject(UnixPasswd.meta$$this, UnixPasswd.class);
-        assertEquals(parsedOne, input);
+        assertEquals(input, parsedOne);
     }
 
     @Test

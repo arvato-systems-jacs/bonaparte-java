@@ -57,7 +57,7 @@ public class TestExternalObjectOutput {
                 + "2500000<F>"
                 + "<S>adapters.moneyfp.FpAmountExt<F><N>785<F><N><O>"
                 + "<O>");
-        Assertions.assertEquals(defaultOut, expectedResult);
+        Assertions.assertEquals(expectedResult, defaultOut);
 
 
         // do the same with a customer serializer, taking objects
@@ -72,6 +72,6 @@ public class TestExternalObjectOutput {
                 + "2.5<F>"
                 + "7.85 EUR<F>"
                 + "<O>");
-        Assertions.assertEquals(newOutput, newExpectedResult);
+        Assertions.assertEquals(newExpectedResult, newOutput);
     }
 }

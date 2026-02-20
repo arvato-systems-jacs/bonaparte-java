@@ -19,6 +19,6 @@ public class ColumnCollectorTest {
             totalWidth += c.getWidth();
             System.out.println(c);
         }
-        Assertions.assertEquals(totalWidth, 490);
+        Assertions.assertEquals(490, totalWidth);
     }
 }

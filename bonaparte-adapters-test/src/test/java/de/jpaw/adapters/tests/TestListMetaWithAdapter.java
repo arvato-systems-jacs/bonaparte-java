@@ -22,11 +22,11 @@ public class TestListMetaWithAdapter {
         c1.writeRecord(m1);
         List<DataAndMeta> dwm = c1.getStorage();
 
-        Assertions.assertEquals(dwm.size(), 3);
-        Assertions.assertEquals(dwm.get(1).data, Long.valueOf(2718));
-        Assertions.assertEquals(dwm.get(1).meta, Millis.meta$$mantissa);
-        Assertions.assertEquals(dwm.get(2).data, BigDecimal.valueOf(3142, 3));
-        Assertions.assertEquals(dwm.get(2).meta, BigMillis.meta$$mantissa);
+        Assertions.assertEquals(3, dwm.size());
+        Assertions.assertEquals(Long.valueOf(2718), dwm.get(1).data);
+        Assertions.assertEquals(Millis.meta$$mantissa, dwm.get(1).meta);
+        Assertions.assertEquals(BigDecimal.valueOf(3142, 3), dwm.get(2).data);
+        Assertions.assertEquals(BigMillis.meta$$mantissa, dwm.get(2).meta);
     }
 
     // see a different result with the last parameter of ListMetaComposer set to true
@@ -37,10 +37,10 @@ public class TestListMetaWithAdapter {
         c1.writeRecord(m1);
         List<DataAndMeta> dwm = c1.getStorage();
 
-        Assertions.assertEquals(dwm.size(), 3);
-        Assertions.assertEquals(dwm.get(1).data, MilliUnits.of(2718));
-        Assertions.assertEquals(dwm.get(1).meta, CustomMillis.meta$$myIntegralMillis);
-        Assertions.assertEquals(dwm.get(2).data, MilliUnits.of(3142));
-        Assertions.assertEquals(dwm.get(2).meta, CustomMillis.meta$$myBigDecimalMillis);
+        Assertions.assertEquals(3, dwm.size());
+        Assertions.assertEquals(MilliUnits.of(2718), dwm.get(1).data);
+        Assertions.assertEquals(CustomMillis.meta$$myIntegralMillis, dwm.get(1).meta);
+        Assertions.assertEquals(MilliUnits.of(3142), dwm.get(2).data);
+        Assertions.assertEquals(CustomMillis.meta$$myBigDecimalMillis, dwm.get(2).meta);
     }
 }

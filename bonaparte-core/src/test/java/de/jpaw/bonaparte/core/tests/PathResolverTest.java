@@ -23,7 +23,7 @@ public class PathResolverTest {
         ClassDefinition obj = XEnumSetDefinition.BClass.INSTANCE.getMetaData();
 
         FieldDefinition f = FieldGetter.getFieldDefinitionForPathname(obj, "baseXEnum");
-        Assertions.assertEquals(f, XEnumSetDefinition.meta$$baseXEnum);
+        Assertions.assertEquals(XEnumSetDefinition.meta$$baseXEnum, f);
     }
 
     @Test
@@ -31,7 +31,7 @@ public class PathResolverTest {
         ClassDefinition obj = ClassDefinition.BClass.INSTANCE.getMetaData();
 
         FieldDefinition f = FieldGetter.getFieldDefinitionForPathname(obj, "fields[2].dataCategory");
-        Assertions.assertEquals(f, FieldDefinition.meta$$dataCategory);
+        Assertions.assertEquals(FieldDefinition.meta$$dataCategory, f);
     }
 
     @Test
@@ -39,12 +39,12 @@ public class PathResolverTest {
         info();
         ClassDefinition obj = XEnumSetDefinition.BClass.INSTANCE.getMetaData();
         FieldDefinition f = FieldGetter.getFieldDefinitionForPathname(obj, "baseXEnum");
-        Assertions.assertEquals(f, XEnumSetDefinition.meta$$baseXEnum);
+        Assertions.assertEquals(XEnumSetDefinition.meta$$baseXEnum, f);
 
         ClassDefinition obj2 = ClassDefinition.BClass.INSTANCE.getMetaData();
 
         FieldDefinition f2 = FieldGetter.getFieldDefinitionForPathname(obj2, "fields[2].dataCategory");
-        Assertions.assertEquals(f2, FieldDefinition.meta$$dataCategory);
+        Assertions.assertEquals(FieldDefinition.meta$$dataCategory, f2);
     }
 
 }

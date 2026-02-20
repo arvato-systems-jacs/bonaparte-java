@@ -39,31 +39,31 @@ public class ScalingTest {
 
         BigDecimal net = BigDecimalTools.retrieveScaled(o, "total.net");
         System.out.println("total net for TND is " + net);
-        Assertions.assertEquals(net.scale(), 3);
+        Assertions.assertEquals(3, net.scale());
         BigDecimal netUnit = BigDecimalTools.retrieveScaled(o, "unitPrice.net");
         System.out.println("unitprice net for TND is " + netUnit);
-        Assertions.assertEquals(netUnit.scale(), 4);
+        Assertions.assertEquals(4, netUnit.scale());
         BigDecimal se1 = BigDecimalTools.retrieveScaled(o, "total.somethingElse");
         System.out.println("total se for TND is " + se1);
-        Assertions.assertEquals(se1.scale(), 2);
+        Assertions.assertEquals(2, se1.scale());
         BigDecimal se2 = BigDecimalTools.retrieveScaled(o, "unitPrice.somethingElse");
         System.out.println("unitPrice se for TND is " + se2);
-        Assertions.assertEquals(se2.scale(), 2);
+        Assertions.assertEquals(2, se2.scale());
 
         // change the currency
         o.account.currency = "JPY";
         net = BigDecimalTools.retrieveScaled(o, "total.net");
         System.out.println("total net for JPY is " + net);
-        Assertions.assertEquals(net.scale(), 0);
+        Assertions.assertEquals(0, net.scale());
         netUnit = BigDecimalTools.retrieveScaled(o, "unitPrice.net");
         System.out.println("unitprice net for JPY is " + netUnit);
-        Assertions.assertEquals(netUnit.scale(), 4);
+        Assertions.assertEquals(4, netUnit.scale());
         se1 = BigDecimalTools.retrieveScaled(o, "total.somethingElse");
         System.out.println("total se for JPY is " + se1);
-        Assertions.assertEquals(se1.scale(), 2);
+        Assertions.assertEquals(2, se1.scale());
         se2 = BigDecimalTools.retrieveScaled(o, "unitPrice.somethingElse");
         System.out.println("unitPrice se for JPY is " + se2);
-        Assertions.assertEquals(se2.scale(), 2);
+        Assertions.assertEquals(2, se2.scale());
 
         // now with a longer path
         System.out.println("longer paths:");
@@ -76,7 +76,7 @@ public class ScalingTest {
         o.account.currency = "TND";
         net = BigDecimalTools.retrieveScaled(lof, "orders[0].total.net");
         System.out.println("total net for TND is " + net);
-        Assertions.assertEquals(net.scale(), 3);
+        Assertions.assertEquals(3, net.scale());
 
     }
 }

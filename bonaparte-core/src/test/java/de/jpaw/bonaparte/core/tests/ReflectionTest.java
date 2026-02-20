@@ -13,7 +13,7 @@ public class ReflectionTest {
     @Test
     public void testReflection() throws Exception {
         BonaPortableClass<?> bclass = FieldGetter.getBClass(BundleInformation.class);
-        Assertions.assertEquals(bclass,  BundleInformation.BClass.INSTANCE);
+        Assertions.assertEquals(BundleInformation.BClass.INSTANCE, bclass);
     }
 
     @Test

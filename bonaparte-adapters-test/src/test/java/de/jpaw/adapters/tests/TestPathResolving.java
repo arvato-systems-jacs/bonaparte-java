@@ -22,10 +22,10 @@ public class TestPathResolving {
         ClassDefinition obj = CustomMillis.BClass.INSTANCE.getMetaData();
 
         FieldDefinition f = FieldGetter.getFieldDefinitionForPathname(obj, "myIntegralMillis", true);
-        Assertions.assertEquals(f, Millis.meta$$mantissa);      // the adapter class should be skipped, as it's a single field adapter
+        Assertions.assertEquals(Millis.meta$$mantissa, f);      // the adapter class should be skipped, as it's a single field adapter
 
         FieldDefinition f2 = FieldGetter.getFieldDefinitionForPathname(obj, "myBigDecimalMillis", true);
-        Assertions.assertEquals(f2, BigMillis.meta$$mantissa);
+        Assertions.assertEquals(BigMillis.meta$$mantissa, f2);
     }
 
     @Test
@@ -34,9 +34,9 @@ public class TestPathResolving {
         ClassDefinition obj = CustomMillis.BClass.INSTANCE.getMetaData();
 
         FieldDefinition f = FieldGetter.getFieldDefinitionForPathname(obj, "myIntegralMillis.mantissa", false);
-        Assertions.assertEquals(f, Millis.meta$$mantissa);      // the adapter class should be skipped, as it's a single field adapter
+        Assertions.assertEquals(Millis.meta$$mantissa, f);      // the adapter class should be skipped, as it's a single field adapter
 
         FieldDefinition f2 = FieldGetter.getFieldDefinitionForPathname(obj, "myBigDecimalMillis.mantissa", false);
-        Assertions.assertEquals(f2, BigMillis.meta$$mantissa);
+        Assertions.assertEquals(BigMillis.meta$$mantissa, f2);
     }
 }

@@ -22,12 +22,12 @@ public class TestCSVOut {
 
         CSVComposer2 p2 = new CSVComposer2(buff, cfg);
         p2.writeObject(data);
-        Assertions.assertEquals(buff.toString(), expected2);
+        Assertions.assertEquals(expected2, buff.toString());
 
         buff.setLength(0);
         CSVComposer3 p3 = new CSVComposer3(buff, cfg);
         p3.writeObject(data);
-        Assertions.assertEquals(buff.toString(), expected3);
+        Assertions.assertEquals(expected3, buff.toString());
     }
 
     @Test
@@ -43,7 +43,7 @@ public class TestCSVOut {
         StringBuilder buff = new StringBuilder(100);
         CSVComposer2 p2 = new CSVComposer2(buff, cfg);
         p2.writeObject(data);
-        Assertions.assertEquals(buff.toString(), "hello;14;world");
+        Assertions.assertEquals("hello;14;world", buff.toString());
     }
 
     @Test
@@ -52,6 +52,6 @@ public class TestCSVOut {
         StringBuilder buff = new StringBuilder(100);
         CSVComposer2 p2 = new CSVComposer2(buff, cfg);
         p2.writeObject(data);
-        Assertions.assertEquals(buff.toString(), "hello;;world");
+        Assertions.assertEquals("hello;;world", buff.toString());
     }
 }

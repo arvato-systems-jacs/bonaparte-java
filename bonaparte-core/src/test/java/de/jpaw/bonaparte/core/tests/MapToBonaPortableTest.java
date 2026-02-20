@@ -22,15 +22,15 @@ public class MapToBonaPortableTest {
         Map<String,Object> testMap = new JsonParser(json, false).parseObject();
         BonaPortable test = MapParser.asBonaPortable(testMap, StaticMeta.OUTER_BONAPORTABLE);
         Assertions.assertNotNull(test);
-        Assertions.assertEquals(test.getClass().getSimpleName(), "ParsedFoldingComponent");
-        Assertions.assertEquals(testMap.get("fieldname"), "foo");
-        Assertions.assertEquals(testMap.get("index"), Integer.valueOf(42));
+        Assertions.assertEquals("ParsedFoldingComponent", test.getClass().getSimpleName());
+        Assertions.assertEquals("foo", testMap.get("fieldname"));
+        Assertions.assertEquals(Integer.valueOf(42), testMap.get("index"));
     }
 
     private void testNumber(Map<String,Object> testMap, String expected) {
-        Assertions.assertEquals(testMap.get("i").getClass().getSimpleName(), "Integer");
-        Assertions.assertEquals(testMap.get("l").getClass().getSimpleName(), "Long");
-        Assertions.assertEquals(testMap.get("d").getClass().getSimpleName(), expected);
+        Assertions.assertEquals("Integer", testMap.get("i").getClass().getSimpleName());
+        Assertions.assertEquals("Long", testMap.get("l").getClass().getSimpleName());
+        Assertions.assertEquals(expected, testMap.get("d").getClass().getSimpleName());
 
     }
 
@@ -54,7 +54,7 @@ public class MapToBonaPortableTest {
 
         BonaPortable test = MapParser.asBonaPortable(testMap, StaticMeta.OUTER_BONAPORTABLE);
         Assertions.assertNotNull(test);
-        Assertions.assertEquals(test.getClass().getSimpleName(), "ParsedFoldingComponent");
+        Assertions.assertEquals("ParsedFoldingComponent", test.getClass().getSimpleName());
     }
 
     /** Demonstrates how a nested Map (parsed JSON) can be converted back to a BonaPortable. */
@@ -77,7 +77,7 @@ public class MapToBonaPortableTest {
 
         BonaPortable test = MapParser.asBonaPortable(testMap, StaticMeta.OUTER_BONAPORTABLE);
         Assertions.assertNotNull(test);
-        Assertions.assertEquals(test.getClass().getSimpleName(), "ParsedFoldingComponent");
+        Assertions.assertEquals("ParsedFoldingComponent", test.getClass().getSimpleName());
         System.out.println(ToStringHelper.toStringML(test));
     }
 }
