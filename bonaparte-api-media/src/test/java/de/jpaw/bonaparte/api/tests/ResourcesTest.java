@@ -11,13 +11,13 @@ public class ResourcesTest {
     @Test
     public void testPNG() throws Exception {
         MediaData d = MediaDataUtil.resourceAsPNG("/image/jpaw.png");
-        Assertions.assertEquals(d.getRawData().length(), 1048);
+        Assertions.assertEquals(1048, d.getRawData().length());
     }
 
     @Test
     public void testJPG() throws Exception {
         MediaData d = MediaDataUtil.resourceAsJPG("/image/jpaw.jpg");
-        Assertions.assertEquals(d.getRawData().length(), 1267);
+        Assertions.assertEquals(1267, d.getRawData().length());
     }
 
     @Test

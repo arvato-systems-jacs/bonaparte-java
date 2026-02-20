@@ -41,22 +41,22 @@ public class JwtConverterTest {
         JwtInfo info = createSampleInfo(now, sessionId);
 
         Map<String, Object> jsonMap = JwtConverter.asMap(info);
-        Assertions.assertEquals(jsonMap.size(), 8);
-        Assertions.assertEquals(jsonMap.get("sub"), "John");
-        Assertions.assertEquals(jsonMap.get("iat"), now);
-        Assertions.assertEquals(jsonMap.get("u"), Long.valueOf(4711L));
-        Assertions.assertEquals(jsonMap.get("l"),  UserLogLevelType.REQUESTS.ordinal());
-        Assertions.assertEquals(jsonMap.get("pu"), Permissionset.ofTokens(OperationType.EXECUTE, OperationType.SEARCH).getBitmap());
-        Assertions.assertEquals(jsonMap.get("w"), Boolean.TRUE);
-        Assertions.assertEquals(jsonMap.get("p"), "B.test");
-        Assertions.assertEquals(jsonMap.get("o"), sessionId);
+        Assertions.assertEquals(8, jsonMap.size());
+        Assertions.assertEquals("John", jsonMap.get("sub"));
+        Assertions.assertEquals(now, jsonMap.get("iat"));
+        Assertions.assertEquals(Long.valueOf(4711L), jsonMap.get("u"));
+        Assertions.assertEquals(UserLogLevelType.REQUESTS.ordinal(), jsonMap.get("l"));
+        Assertions.assertEquals(Permissionset.ofTokens(OperationType.EXECUTE, OperationType.SEARCH).getBitmap(), jsonMap.get("pu"));
+        Assertions.assertEquals(Boolean.TRUE, jsonMap.get("w"));
+        Assertions.assertEquals("B.test", jsonMap.get("p"));
+        Assertions.assertEquals(sessionId, jsonMap.get("o"));
 
         // test the conversion back to the JwtInfo
         JwtPayload payload = JwtConverter.parsePayload(jsonMap);
         JwtInfo info2 = JwtConverter.parseJwtInfo(payload);
         System.out.println(ToStringHelper.toStringML(payload));
         System.out.println(ToStringHelper.toStringML(info2));
-        Assertions.assertEquals(info2, info);
+        Assertions.assertEquals(info, info2);
     }
 
     @Test

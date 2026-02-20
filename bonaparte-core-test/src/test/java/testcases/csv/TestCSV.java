@@ -92,7 +92,7 @@ public class TestCSV {
         StringCSVParser p = new StringCSVParser(cfgDE, input);
         BonaPortable o    = p.readObject(StaticMeta.OUTER_BONAPORTABLE_FOR_CSV, Test4.class);
         Test4 oo = (Test4)o;
-        Assertions.assertEquals(oo.getMayBeNullButNotShort(), "hello", "truncated string");
+        Assertions.assertEquals("hello", oo.getMayBeNullButNotShort(), "truncated string");
         oo.validate();
     }
 
@@ -104,6 +104,6 @@ public class TestCSV {
         BonaPortable o    = p.readObject(StaticMeta.OUTER_BONAPORTABLE_FOR_CSV, Test4.class);
         Test4 oo = (Test4)o;
         oo.validate();
-        Assertions.assertEquals(oo.getMayBeNullButNotShort(), null, "truncated string");
+        Assertions.assertEquals(null, oo.getMayBeNullButNotShort(), "truncated string");
     }
 }

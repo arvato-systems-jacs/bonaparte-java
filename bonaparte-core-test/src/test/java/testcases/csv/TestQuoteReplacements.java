@@ -28,7 +28,7 @@ public class TestQuoteReplacements {
         String actualOutput = buffer.toString();
 //        System.out.println("Expected  " + expectedOutput);
 //        System.out.println("Result is " + actualOutput);
-        Assertions.assertEquals(actualOutput, expectedOutput);
+        Assertions.assertEquals(expectedOutput, actualOutput);
 
 //        StringCSVParser p = new StringCSVParser(cfg, actualOutput);
 //        BonaPortable result = p.readObject(StaticMeta.OUTER_BONAPORTABLE_FOR_CSV, input.getClass());

@@ -11,12 +11,12 @@ public class TestStringXEnumSetOperations {
         XAlphabet x = new XAlphabet(a);
         x.unifyWith(new XAlphabet(b));                 // Set union
 
-        Assertions.assertEquals(x, new XAlphabet(union));  // Set equals
+        Assertions.assertEquals(new XAlphabet(union), x);  // Set equals
 
         XAlphabet x1 = new XAlphabet(a);
         x1.unifyWith(b);                            // String arg union
 
-        Assertions.assertEquals(x1.getBitmap(), union); // String equals
+        Assertions.assertEquals(union, x1.getBitmap()); // String equals
     }
 
     @Test
@@ -38,12 +38,12 @@ public class TestStringXEnumSetOperations {
         XAlphabet x = new XAlphabet(a);
         x.intersectWith(new XAlphabet(b));             // Set Difference
 
-        Assertions.assertEquals(x, new XAlphabet(common)); // Set equals
+        Assertions.assertEquals(new XAlphabet(common), x); // Set equals
 
         XAlphabet x1 = new XAlphabet(a);
         x1.intersectWith(b);                        // String arg Difference
 
-        Assertions.assertEquals(x1.getBitmap(), common);// String equals
+        Assertions.assertEquals(common, x1.getBitmap());// String equals
     }
 
     @Test
@@ -65,12 +65,12 @@ public class TestStringXEnumSetOperations {
         XAlphabet x = new XAlphabet(a);
         x.exclude(new XAlphabet(b));                       // Set exclusion
 
-        Assertions.assertEquals(x, new XAlphabet(difference)); // Set equals
+        Assertions.assertEquals(new XAlphabet(difference), x); // Set equals
 
         XAlphabet x1 = new XAlphabet(a);
         x1.exclude(b);                                  // String arg exclusion
 
-        Assertions.assertEquals(x1.getBitmap(), difference);// String equals
+        Assertions.assertEquals(difference, x1.getBitmap());// String equals
     }
 
     @Test
@@ -94,12 +94,12 @@ public class TestStringXEnumSetOperations {
         XAlphabet x = new XAlphabet(a);
         x.flip(new XAlphabet(b));                       // Set xor
 
-        Assertions.assertEquals(x, new XAlphabet(flipped)); // Set equals
+        Assertions.assertEquals(new XAlphabet(flipped), x); // Set equals
 
         XAlphabet x1 = new XAlphabet(a);
         x1.flip(b);                                  // String arg xor
 
-        Assertions.assertEquals(x1.getBitmap(), flipped);// String equals
+        Assertions.assertEquals(flipped, x1.getBitmap());// String equals
     }
 
     @Test
@@ -121,7 +121,7 @@ public class TestStringXEnumSetOperations {
 
     private void testInit(String a, String result) throws Exception {
         XAlphabet x = new XAlphabet(a);
-        Assertions.assertEquals(x.getBitmap(), result);    // String equals
+        Assertions.assertEquals(result, x.getBitmap());    // String equals
     }
 
     @Test

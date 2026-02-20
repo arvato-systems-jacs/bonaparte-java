@@ -14,7 +14,7 @@ public class TestImmutableEnumSet {
         ImmutableStringEnumSet z = ImmutableStringEnumSet.of(union);
         ImmutableStringEnumSet r = BASE.add(b);
 
-        Assertions.assertEquals(r, z);  // Set equals
+        Assertions.assertEquals(z, r);  // Set equals
 
         Assertions.assertEquals(union, r.getBitmap()); // String equals
     }
@@ -33,14 +33,14 @@ public class TestImmutableEnumSet {
         ImmutableStringEnumSet a = ImmutableStringEnumSet.of("BD");
         ImmutableStringEnumSet b = a.add(ManyLetters.CHARLIE);
         ImmutableStringEnumSet c = ImmutableStringEnumSet.of("BCD");
-        Assertions.assertEquals(b, c);
+        Assertions.assertEquals(c, b);
     }
 
     private void testMinus(TokenizableEnum b, String difference) throws Exception {
         ImmutableStringEnumSet z = ImmutableStringEnumSet.of(difference);
         ImmutableStringEnumSet r = BASE.minus(b);
 
-        Assertions.assertEquals(r, z);  // Set equals
+        Assertions.assertEquals(z, r);  // Set equals
 
         Assertions.assertEquals(difference, r.getBitmap()); // String equals
     }

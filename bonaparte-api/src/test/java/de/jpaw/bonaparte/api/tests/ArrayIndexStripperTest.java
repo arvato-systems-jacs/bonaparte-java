@@ -10,7 +10,7 @@ public class ArrayIndexStripperTest {
 
     private void check(String in, String expected, String testcase) throws Exception {
         String actual = cc.stripArrayIndexes(in);
-        Assertions.assertEquals(actual, expected, testcase);
+        Assertions.assertEquals(expected, actual, testcase);
     }
 
     @Test

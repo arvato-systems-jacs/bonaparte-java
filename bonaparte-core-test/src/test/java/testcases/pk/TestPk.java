@@ -14,6 +14,6 @@ public class TestPk {
 
         BonaPortableClass<?> keyClass = ClassC.BClass.INSTANCE.getPrimaryKey();
         Assertions.assertNotNull(keyClass);
-        Assertions.assertEquals(keyClass, ClassA.BClass.INSTANCE.getPrimaryKey());
+        Assertions.assertEquals(ClassA.BClass.INSTANCE.getPrimaryKey(), keyClass);
     }
 }
