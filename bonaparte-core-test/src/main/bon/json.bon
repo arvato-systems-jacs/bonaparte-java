@@ -20,6 +20,12 @@ package jsonTest {
         Time(3)             t3;
     }
 
+    final class TestD {
+        Unicode(20)         text;
+        Day                 d0;
+        Day                 d3;
+    }
+
     class TestSimple {
         int                 num;
         Unicode(20)         text;
@@ -136,5 +142,18 @@ package jsonTest {
 
     class WrapperForJsonEnumSets {
         required (JsonEnumSets)       obj;
+    }
+
+    // Test classes for nested object serialization
+    class User {
+        int                     id;
+        Unicode(100)            name;
+        Unicode(50) List<>      tags;
+        boolean                 active;
+        element List<>          preferences;
+    }
+
+    class Data {
+        required (User)         user;
     }
 }
