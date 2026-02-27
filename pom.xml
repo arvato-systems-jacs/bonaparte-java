@@ -4,12 +4,12 @@
     <parent>
         <groupId>de.jpaw</groupId>
         <artifactId>jpaw-base</artifactId>
-        <version>3.7.1</version>
+        <version>3.8.0</version>
         <relativePath />
     </parent>
 
     <artifactId>bonaparte-base</artifactId>
-    <version>6.3.7-SNAPSHOT</version>
+    <version>6.4.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <description>build master for BONAPARTE based projects</description>
@@ -31,17 +31,17 @@
 
         <!-- define revisions of other jpaw.de projects, not covered by plugin management -->
         <bonaparte-plugin.version>6.3.0</bonaparte-plugin.version> <!-- do not use -SNAPSHOT here (GH CI can't deal with it) -->
-        <jpaw.version>3.7.0</jpaw.version>
+        <jpaw.version>3.8.0</jpaw.version>
 
         <!-- define releases (mostly of 3rd party dependencies) we want to use, to ensure consistency -->
         <!-- Some more versions, used by specific dependent projects -->
         <gson.version>2.11.0</gson.version>
 
         <lucene.version>4.10.4</lucene.version>
-        <netty.version>4.2.4.Final</netty.version>
+        <netty.version>4.2.10.Final</netty.version>
         <poi.version>5.4.1</poi.version>
-        <camel.version>4.14.0</camel.version>
-        <vertx3.version>5.0.3</vertx3.version>
+        <camel.version>4.18.0</camel.version>
+        <vertx3.version>5.0.8</vertx3.version>
 
         <!-- distributed caches -->
         <ehcache.version>2.10.2</ehcache.version>
@@ -60,8 +60,8 @@
         <!-- versions for persistence projects -->
         <jakarta.persistence-api.version>3.2.0</jakarta.persistence-api.version>
 
-        <eclipselink.version>4.0.7</eclipselink.version>
-        <hibernate.version>7.1.0.Final</hibernate.version>
+        <eclipselink.version>4.0.9</eclipselink.version>
+        <hibernate.version>7.1.4.Final</hibernate.version>
         <hibernate-types.version>3.9.0</hibernate-types.version>  <!-- for io.hypersistence:hypersistence-utils-hibernate-63 -->
 
         <postgres.driver.version>42.7.7</postgres.driver.version>
