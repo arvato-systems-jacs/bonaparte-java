@@ -21,11 +21,11 @@ public class LocaleAdapterImpl {
     public static <E extends Exception> Locale unmarshal(LocaleAdapter so, ExceptionConverter<E> p) throws E {
         try {
             if (so.getCountry() == null)
-                return new Locale(so.getLanguage());
+                return Locale.of(so.getLanguage());
             else if (so.getVariant() == null)
-                return new Locale(so.getLanguage(), so.getCountry());
+                return Locale.of(so.getLanguage(), so.getCountry());
             else
-                return new Locale(so.getLanguage(), so.getCountry(), so.getVariant());
+                return Locale.of(so.getLanguage(), so.getCountry(), so.getVariant());
         } catch (Exception e) {
             throw p.customExceptionConverter("Cannot create Locale for language " + nvl(so.getLanguage())
                     + ", country " + nvl(so.getCountry()) + ", variant " + nvl(so.getVariant()), e);
