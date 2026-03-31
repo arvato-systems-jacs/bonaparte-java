@@ -172,6 +172,14 @@
                     <xs:element name="permissionsMin" minOccurs="0" nillable="true" type="api_auth:Permissionset"/>
                     <xs:element name="permissionsMax" minOccurs="0" nillable="true" type="api_auth:Permissionset"/>
                     <xs:element name="z" minOccurs="0" nillable="true" type="bon:JSON"/>
+                    <xs:element name="email" minOccurs="0" nillable="true">
+                        <xs:simpleType>
+                            <xs:restriction base="xs:string">
+                                <xs:maxLength value="255"/>
+                            </xs:restriction>
+                        </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="emailVerified" minOccurs="0" nillable="true" type="xs:boolean"/>
                 </xs:sequence>
             </xs:extension>
         </xs:complexContent>
@@ -241,6 +249,14 @@
                     <xs:element name="pl" minOccurs="0" nillable="true" type="api_auth:Permissionset"/>
                     <xs:element name="pu" minOccurs="0" nillable="true" type="api_auth:Permissionset"/>
                     <xs:element name="z" minOccurs="0" nillable="true" type="bon:JSON"/>
+                    <xs:element name="em" minOccurs="0" nillable="true">
+                        <xs:simpleType>
+                            <xs:restriction base="xs:string">
+                                <xs:maxLength value="255"/>
+                            </xs:restriction>
+                        </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="ev" minOccurs="0" nillable="true" type="xs:boolean"/>
                 </xs:sequence>
             </xs:extension>
         </xs:complexContent>

@@ -97,6 +97,8 @@ public class JwtConverter {
         info.setPermissionsMin      (payload.getPl());
         info.setPermissionsMax      (payload.getPu());
         info.setZ                   (payload.getZ());
+        info.setEmail               (payload.getEm());
+        info.setEmailVerified       (payload.getEv());
         info.freeze();
         return info;
     }

@@ -58,20 +58,21 @@ package api.auth XML PROPERTY factoryId 25 {
     }
 
     class JwtInfo classId 202 {
+        // OIDC standard fields
         optional Unicode(255)           issuer              properties tag = "iss";         // issuer
         optional Unicode(255)           userId              properties tag = "sub";         // subject (user ID)
         optional Unicode(255)           audience            properties tag = "aud";         // audience
         optional Instant                expiresAt           properties tag = "exp";         // expiration (time)
-        optional Instant                notBefore           properties tag = "nbf";         // not before
+        optional Instant                notBefore           properties tag = "nbf";         // not before (not required by OIDC standard)
         optional Instant                issuedAt            properties tag = "iat";         // issued at
-        optional Unicode(40)            jsonTokenIdentifier properties tag = "jti";         // JSON token identifier (unique ID)
+        optional Unicode(40)            jsonTokenIdentifier properties tag = "jti";         // JSON token identifier (unique ID) (not required by OIDC standard)
 
-        // commonly used fields...
+        // commonly used fields (requested by OIDC profile scope)
         optional Unicode(255)           name                properties tag = "name";        // user name (user real world name)
         optional languageTag            locale              properties tag = "locale";      // IETF BCP47 language tag (ISO639-A2, plus optional "-" and then ISO3166-A2)
         optional Ascii(64)              zoneinfo            properties tag = "zoneinfo";    // IANA 2015g or later time zone info string
 
-        // fields used by this implementation... (references are internal numeric keys)
+        // additional fields used by this implementation... (references are internal numeric keys)
         optional genericId              tenantId            properties tag = "i";          // tenant ID
         optional Long                   tenantRef           properties tag = "t";          // tenant reference
         optional Long                   sessionRef          properties tag = "s";          // session reference
@@ -86,6 +87,10 @@ package api.auth XML PROPERTY factoryId 25 {
         optional Enumset Permissionset  permissionsMin      properties tag = "pl";         // minimum permissions (lower bound, set always allowed)
         optional Enumset Permissionset  permissionsMax      properties tag = "pu";         // maximum permissions (upper bound, permissions not in this set are never allowed)
         optional Json                   z                   properties tag = "z";          // user extensions when class inheritance is not used
+
+        // additional fields (requested by OIDC email scope)
+        optional Unicode(255)           email               properties tag = "em";         // user's email address of OIDC email claim
+        optional Boolean                emailVerified       properties tag = "ev";         // indicates of the user's email address has been verified
     }
 
     // technical mapping
@@ -118,5 +123,7 @@ package api.auth XML PROPERTY factoryId 25 {
         optional Enumset Permissionset  pl;         // minimum permissions (lower bound, set always allowed)
         optional Enumset Permissionset  pu;         // maximum permissions (upper bound, permissions not in this set are never allowed)
         optional Json                   z;          // user extensions when class inheritance is not used
+        optional Unicode(255)           em;         // user's email address of OIDC email claim
+        optional Boolean                ev;         // indicates of the user's email address has been verified
     }
 }
