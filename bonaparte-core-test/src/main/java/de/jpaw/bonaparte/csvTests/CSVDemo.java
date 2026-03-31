@@ -62,7 +62,7 @@ public class CSVDemo {
         testTag("th_TH_TH", "thai");                            // latin numbers
         testTag("th-TH-u-nu-thai", "thai (with BCP47 code)");   // Thai numbers!
         testTag("ar_EG", "Arabic (Egypt)");                     // latin
-        runTest(builder.forLocale(Locale.of("ar", "EG")).build(), "Arabic EG");    // arabic format, minus behind digits
+        runTest(builder.forLocale(new Locale("ar", "EG")).build(), "Arabic EG");    // arabic format, minus behind digits
     }
 
 }
