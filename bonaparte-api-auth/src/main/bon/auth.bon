@@ -65,7 +65,7 @@ package api.auth XML PROPERTY factoryId 25 {
         optional Instant                expiresAt           properties tag = "exp";         // expiration (time)
         optional Instant                notBefore           properties tag = "nbf";         // not before (not required by OIDC standard)
         optional Instant                issuedAt            properties tag = "iat";         // issued at
-        optional Unicode(40)            jsonTokenIdentifier properties tag = "jti";         // JSON token identifier (unique ID) (not required by OIDC standard)
+        optional Unicode(255)           jsonTokenIdentifier properties tag = "jti";         // JSON token identifier (unique ID) (not required by OIDC standard)
 
         // commonly used fields (requested by OIDC profile scope)
         optional Unicode(255)           name                properties tag = "name";        // user name (user real world name)

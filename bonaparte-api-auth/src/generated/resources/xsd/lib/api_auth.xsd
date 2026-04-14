@@ -138,7 +138,7 @@
                     <xs:element name="jsonTokenIdentifier" minOccurs="0" nillable="true">
                         <xs:simpleType>
                             <xs:restriction base="xs:string">
-                                <xs:maxLength value="40"/>
+                                <xs:maxLength value="255"/>
                             </xs:restriction>
                         </xs:simpleType>
                     </xs:element>
