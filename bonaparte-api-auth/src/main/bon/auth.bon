@@ -101,7 +101,7 @@ package api.auth XML PROPERTY factoryId 25 {
         optional Instant                exp;        // expiration (time)
         optional Instant                nbf;        // not before
         optional Instant                iat;        // issued at
-        optional Unicode(40)            jti;        // JSON token identifier (unique ID)
+        optional Unicode(255)           jti;        // JSON token identifier (unique ID)
 
         // commonly used fields...
         optional Unicode(255)           name;       // user name (user real world name)
