@@ -3,6 +3,7 @@ import adapters.fixedpoint.*
 import adapters.fixedpointToBigDecimal.*
 import adapters.moneyfp.*
 import adapters.gson.*
+import adapters.jts.*
 
 /** Test classes for the adapters
  */
@@ -43,5 +44,11 @@ package adapters.tests {
     class DataWithJsonObj {
         required Unicode(80)            text;
         optional (GsonObject)           z;
+    }
+
+    /** Jts data: Point and Point with SRID. */
+    class JtsDataTypes {
+        required (BPoint2dim)           point;
+        optional (BPoint2dimWithSrid)   extra;
     }
 }

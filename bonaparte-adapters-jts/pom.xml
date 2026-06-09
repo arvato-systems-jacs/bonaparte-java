@@ -7,10 +7,13 @@
         <version>6.5.1-SNAPSHOT</version>
     </parent>
 
-    <artifactId>bonaparte-adapters-test</artifactId>
+    <artifactId>bonaparte-adapters-jts</artifactId>
     <packaging>jar</packaging>
 
-    <description>BONAPARTE external class adapters tests</description>
+    <description>
+        BONAPARTE external class adapters for JTS LocationTech types
+        Reserved factoryId: 27 (shared across all bonaparte-adapter-* projects)
+    </description>
 
     <build>
         <resources>
@@ -36,39 +39,29 @@
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>build-helper-maven-plugin</artifactId>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifestEntries>
+                            <Automatic-Module-Name>de.jpaw.bonaparte.adapters.scalar</Automatic-Module-Name>
+                        </manifestEntries>
+                    </archive>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 
     <dependencies>
         <dependency>
             <groupId>de.jpaw</groupId>
-            <artifactId>bonaparte-adapters-scalar</artifactId>
+            <artifactId>bonaparte-core</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>de.jpaw</groupId>
-            <artifactId>bonaparte-adapters-gson</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>de.jpaw</groupId>
-            <artifactId>bonaparte-adapters-money-fp</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>de.jpaw</groupId>
-            <artifactId>bonaparte-adapters-money-bd</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>de.jpaw</groupId>
-            <artifactId>bonaparte-adapters-jts</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>de.jpaw</groupId>
-            <artifactId>bonaparte-core-test</artifactId>
-            <version>${project.version}</version>
+            <groupId>org.locationtech.jts</groupId>
+            <artifactId>jts-core</artifactId>
         </dependency>
     </dependencies>
 

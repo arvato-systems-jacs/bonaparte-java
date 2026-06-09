@@ -1,0 +1,22 @@
+import org.locationtech.jts.geom.*
+
+/**
+ * JTS LocationTech data.
+ * Assigned to factoryId 27
+ */
+package adapters.jts factoryId 27 {
+
+    /** A simple 2 dimensional point. */
+    final immutable class BPoint2dim classId 41 is Point adapter de.jpaw.bonaparte.adapters.jts.JtsPointAdapter withExceptionConverter {
+        required double                 x;
+        required double                 y;
+        // optional Double                 z;  // we only do 2 dimensional for now
+    }
+
+    /** A 2 dimensional point with srid. */
+    final immutable class BPoint2dimWithSrid classId 42 is Point adapter de.jpaw.bonaparte.adapters.jts.JtsPointWithSridAdapter withExceptionConverter {
+    	required int                    srid;
+        required double                 x;
+        required double                 y;
+    }
+}
