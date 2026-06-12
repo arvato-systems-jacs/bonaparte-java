@@ -2,6 +2,7 @@ import de.jpaw.money.*
 import adapters.fixedpoint.*
 import adapters.fixedpointToBigDecimal.*
 import adapters.moneyfp.*
+import adapters.jts.*
 
 package adapterTest {
     default unsigned trim noControlChars;
@@ -18,5 +19,11 @@ package adapterTest {
         Long                                        key;
         required (FpCurrencyStd)                    currency;
         required (FpAmountExt) for currency         amounts;
+    }
+
+    class WithJTS {
+        Long                                        key;
+        required (BPoint2dim)                       coordinate;
+        optional (BPolygon)                         area;
     }
 }

@@ -20,6 +20,11 @@
         </dependency>
         <dependency>
             <groupId>de.jpaw</groupId>
+            <artifactId>bonaparte-adapters-jts</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>de.jpaw</groupId>
             <artifactId>bonaparte-adapters-money-fp</artifactId>
             <version>${project.version}</version>
         </dependency>

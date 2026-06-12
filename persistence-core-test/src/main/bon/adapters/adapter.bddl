@@ -3,6 +3,7 @@ import def.*
 import adapters.fixedpoint.*
 import adapters.fixedpointToBigDecimal.*
 import adapters.moneyfp.*
+import adapters.jts.*
 
 default
     tablenamepattern "(prefix)_(category)_(entity)" dropSuffix "_entity"
@@ -24,6 +25,7 @@ package adapterTest owner jpaw prefix at {
     embeddable MillisEntity         is Millis {}
     embeddable CurrEmbed            is FpCurrencyStd {}
     embeddable AmountEmbed          is FpAmountExt {}
+    embeddable PointEmbed           is BPoint2dim {}
 
 
     entity WithExternalClassEntity category cfg is WithExternalClass {
@@ -37,5 +39,9 @@ package adapterTest owner jpaw prefix at {
 //        @Embeddable CurrEmbed   for currency
         @Embeddable AmountEmbed for amounts
 
+    }
+
+    entity WithJTSEntity category cfg is WithJTS {
+        pk (key)
     }
 }
