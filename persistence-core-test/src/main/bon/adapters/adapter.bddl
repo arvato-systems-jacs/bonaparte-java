@@ -43,5 +43,6 @@ package adapterTest owner jpaw prefix at {
 
     entity WithJTSEntity category cfg is WithJTS {
         pk (key)
+        index using gist (coordinate)
     }
 }
