@@ -2,7 +2,12 @@ package de.jpaw.bonaparte.util;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
+
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 
 import de.jpaw.bonaparte.core.BonaPortable;
 
@@ -12,19 +17,19 @@ public class ToStringHelper {
     public static int maxMap = -1;
     public static boolean showTransientFields = false;
 
-    public static String toStringML(Object obj) {
-        StringBuilder _buffer = new StringBuilder(1000);
+    public static String toStringML(@Nullable final Object obj) {
+        final StringBuilder _buffer = new StringBuilder(1000);
         FieldOut(_buffer, new StringBuilder("\n"), true, obj);
         return _buffer.toString();
     }
 
-    public static String toStringSL(Object obj) {
-        StringBuilder _buffer = new StringBuilder(1000);
+    public static String toStringSL(@Nullable final Object obj) {
+        final StringBuilder _buffer = new StringBuilder(1000);
         FieldOut(_buffer, null, false, obj);
         return _buffer.toString();
     }
 
-    private static void delimiter(StringBuilder _buffer, StringBuilder _currentIndent, boolean ofSuperClass) {
+    private static void delimiter(@Nonnull final StringBuilder _buffer, @Nonnull final StringBuilder _currentIndent, final boolean ofSuperClass) {
         if (_currentIndent == null) {
             // single line output
             _buffer.append(ofSuperClass ? "< " : ", ");
@@ -41,12 +46,12 @@ public class ToStringHelper {
     }
 
 
-    public static void FieldOut(StringBuilder _buffer, StringBuilder _currentIndent, boolean showNulls, Object value) {
+    public static void FieldOut(@Nonnull final StringBuilder _buffer, @Nonnull final StringBuilder _currentIndent, final boolean showNulls, @Nullable final Object value) {
         int count = 0;
         if (value == null) {
             _buffer.append("null");
-        } else if (value instanceof BonaPortable) {
-            BonaPortable(_buffer, _currentIndent, showNulls, value);
+        } else if (value instanceof BonaPortable b) {
+            BonaPortable(_buffer, _currentIndent, showNulls, b);
         } else if (value instanceof java.util.List li) {
             // output a list of objects
             boolean firstInList = true;
@@ -106,7 +111,7 @@ public class ToStringHelper {
         }
     }
 
-    public static void BonaPortable(StringBuilder _buffer, StringBuilder _currentIndent, boolean showNulls, Object obj) {
+    private static void BonaPortable(@Nonnull final StringBuilder _buffer, @Nonnull final StringBuilder _currentIndent, final boolean showNulls, @Nonnull final BonaPortable obj) {
         _buffer.append(obj.getClass().getSimpleName());
         _buffer.append("(");
         if (_currentIndent != null) {
@@ -115,7 +120,12 @@ public class ToStringHelper {
         }
         // object output
         // this is mainly used for debugging, so speed is not as relevant and reflection can be used instead of generated code
-        toStringHelperClassOut(_buffer, _currentIndent, showNulls, obj, obj.getClass());
+
+        // get information about fields to be masked (passwords, etc.) from the class itself
+        final String maskedFieldsString = obj.ret$BonaPortableClass().getProperty("mask");
+        final List<String> maskedFields = maskedFieldsString == null ? null : Arrays.asList(maskedFieldsString.split(","));
+
+        toStringHelperClassOut(_buffer, _currentIndent, showNulls, obj, obj.getClass(), maskedFields);
         // closure
         if (_currentIndent != null) {
             _currentIndent.setLength(_currentIndent.length() - 2);      // restore previous length
@@ -125,13 +135,13 @@ public class ToStringHelper {
     }
 
     // returns true if at least one field has been printed
-    private static boolean toStringHelperClassOut(StringBuilder _buffer, StringBuilder _currentIndent, boolean showNulls, Object obj,
-            Class<?> thisClass) {
+    private static boolean toStringHelperClassOut(@Nonnull final StringBuilder _buffer, @Nonnull final StringBuilder _currentIndent, final boolean showNulls, @Nonnull final BonaPortable obj, final Class<?> thisClass, final List<String> maskedFields) {
+
         boolean firstField = true;
         boolean didSome = false;
         if (thisClass.getSuperclass() != Object.class) {
             // descend
-            didSome = toStringHelperClassOut(_buffer, _currentIndent, showNulls, obj, thisClass.getSuperclass());
+            didSome = toStringHelperClassOut(_buffer, _currentIndent, showNulls, obj, thisClass.getSuperclass(), maskedFields);
             if (didSome)
                 delimiter(_buffer, _currentIndent, true);
         }
@@ -159,7 +169,12 @@ public class ToStringHelper {
             if (value != null || showNulls) {
                 _buffer.append(field.getName());
                 _buffer.append("=");
-                 FieldOut(_buffer, _currentIndent, showNulls, value);
+                // check for masked field
+                if (maskedFields != null && maskedFields.contains(field.getName())) {
+					_buffer.append("***");
+				} else {
+                    FieldOut(_buffer, _currentIndent, showNulls, value);
+				}
             }
         }
         return didSome || !firstField;
