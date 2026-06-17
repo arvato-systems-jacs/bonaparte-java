@@ -81,11 +81,6 @@
             </dependency>
             <dependency>
                 <groupId>de.jpaw</groupId>
-                <artifactId>bonaparte-android</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>de.jpaw</groupId>
                 <artifactId>bonaparte-xml</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -96,62 +91,7 @@
             </dependency>
             <dependency>
                 <groupId>de.jpaw</groupId>
-                <artifactId>bonaparte-jaxrs</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>de.jpaw</groupId>
-                <artifactId>bonaparte-hazelcast</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>de.jpaw</groupId>
-                <artifactId>bonaparte-hazelcast-api</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>de.jpaw</groupId>
-                <artifactId>bonaparte-hazelcast-test</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>de.jpaw</groupId>
-                <artifactId>bonaparte-ehcache-api</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>de.jpaw</groupId>
-                <artifactId>bonaparte-ehcache3-api</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>de.jpaw</groupId>
                 <artifactId>bonaparte-poi</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>de.jpaw</groupId>
-                <artifactId>bonaparte-demorqrs</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>de.jpaw</groupId>
-                <artifactId>bonaparte-netty</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>de.jpaw</groupId>
-                <artifactId>bonaparte-netty-test</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>de.jpaw</groupId>
-                <artifactId>bonaparte-batch</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>de.jpaw</groupId>
-                <artifactId>bonaparte-akka</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -161,37 +101,7 @@
             </dependency>
             <dependency>
                 <groupId>de.jpaw</groupId>
-                <artifactId>bonaparte-mina</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>de.jpaw</groupId>
-                <artifactId>bonaparte-hornetq</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>de.jpaw</groupId>
-                <artifactId>bonaparte-vertx</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>de.jpaw</groupId>
-                <artifactId>bonaparte-vertx-test</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>de.jpaw</groupId>
-                <artifactId>bonaparte-i18n</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>de.jpaw</groupId>
                 <artifactId>bonaparte-refs</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>de.jpaw</groupId>
-                <artifactId>bonaparte-servlet</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -199,57 +109,7 @@
                 <artifactId>bonaparte-zk</artifactId>
                 <version>${project.version}</version>
             </dependency>
-            <dependency>
-                <groupId>de.jpaw</groupId>
-                <artifactId>bonaparte-repackage</artifactId>
-                <version>${project.version}</version>
-            </dependency>
 
-            <dependency>
-                <groupId>de.jpaw</groupId>
-                <artifactId>bonaparte8-util</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>de.jpaw</groupId>
-                <artifactId>bonaparte8-adapters-datetime</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>de.jpaw</groupId>
-                <artifactId>bonaparte8-batch</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>de.jpaw</groupId>
-                <artifactId>bonaparte8-api-alexa</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>de.jpaw</groupId>
-                <artifactId>bonaparte8-test</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>de.jpaw</groupId>
-                <artifactId>bonaparte8-vertx3</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>de.jpaw</groupId>
-                <artifactId>bonaparte8-vertx3-auth</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>de.jpaw</groupId>
-                <artifactId>bonaparte8-vertx3-test</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>de.jpaw</groupId>
-                <artifactId>bonaparte8-aws-sqs</artifactId>
-                <version>${project.version}</version>
-            </dependency>
         </dependencies>
     </dependencyManagement>
 
