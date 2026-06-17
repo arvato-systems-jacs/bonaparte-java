@@ -79,10 +79,6 @@
             <artifactId>jakarta.xml.bind-api</artifactId>
         </dependency>
         <dependency>
-            <groupId>de.jpaw</groupId>
-            <artifactId>jpaw-socket</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
         </dependency>
@@ -101,15 +97,6 @@
             <artifactId>slf4j-simple</artifactId>
             <scope>test</scope>
         </dependency>
-
-<!--
-        <dependency>
-            <groupId>com.esotericsoftware.kryo</groupId>
-            <artifactId>kryo</artifactId>
-            <version>${kryo.version}</version>
-            <scope>test</scope>
-        </dependency>
- -->
     </dependencies>
 
 </project>
