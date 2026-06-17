@@ -1,0 +1,15 @@
+package maskedTest {
+	properties mask;
+	
+	class Superclass {
+		properties mask="password,apiKey";
+		int         x;
+		Unicode(20) password;
+		Uuid        apiKey;
+	}
+	
+	class Child extends Superclass {
+		properties inherited;
+		Ascii(6)    moreData;
+	}
+}
