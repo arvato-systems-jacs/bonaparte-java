@@ -44,9 +44,7 @@
         <vertx3.version>5.0.12</vertx3.version>
 
         <!-- distributed caches -->
-        <ehcache.version>2.10.2</ehcache.version>
         <ehcache3.version>3.0.0</ehcache3.version>
-        <hazelcast.version>3.5.5</hazelcast.version>
         <infinispan.version>7.1.1.Final</infinispan.version>
 
         <koloboke.version>0.6.8</koloboke.version>
@@ -323,27 +321,10 @@
         <module>bonaparte-xml-test/pom.xml</module>
         <module>bonaparte-api-auth/pom.xml</module>
         <module>bonaparte-api-media/pom.xml</module>
-        <module>bonaparte-hazelcast/pom.xml</module>
-        <module>bonaparte-hazelcast-api/pom.xml</module>
-        <module>bonaparte-hazelcast-test/pom.xml</module>
-        <module>bonaparte-ehcache-api/pom.xml</module>
-        <module>bonaparte-ehcache3-api/pom.xml</module>
         <module>bonaparte-poi/pom.xml</module>
-        <module>bonaparte-demorqrs/pom.xml</module>
         <module>bonaparte-refs/pom.xml</module>
-        <!-- bonaparte-netty remove July 7th, 2025
-        <module>bonaparte-netty/pom.xml</module>
-        <module>bonaparte-netty-test/pom.xml</module>
-        -->
-        <module>bonaparte-batch/pom.xml</module>
         <module>bonaparte-camel/pom.xml</module>
         <module>bonaparte-zk/pom.xml</module>
-
-        <module>bonaparte8-util/pom.xml</module>
-        <module>bonaparte8-api-alexa/pom.xml</module>
-        <module>bonaparte8-aws-sqs/pom.xml</module>
-        <module>bonaparte8-vertx3/pom.xml</module>
-        <module>bonaparte8-batch/pom.xml</module>
 
         <module>persistence-bom/pom.xml</module>
         <module>persistence-core/pom.xml</module>
