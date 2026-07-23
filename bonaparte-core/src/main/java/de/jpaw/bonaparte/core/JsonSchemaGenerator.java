@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 import de.jpaw.bonaparte.pojos.jsonschema.JsonSchema;
+import de.jpaw.bonaparte.pojos.jsonschema.JsonSchemaType;
 import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.BasicNumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.BinaryElementaryDataItem;
@@ -89,7 +90,7 @@ public class JsonSchemaGenerator {
     private JsonSchema processClass(ClassDefinition classDef) {
         JsonSchema schema = new JsonSchema();
         schema.setTitle(classDef.getName());
-        schema.setType("object");
+        schema.setType(JsonSchemaType.OBJECT);
 
         Map<String, JsonSchema> properties = new LinkedHashMap<>();
         List<String> requiredProperties = new ArrayList<>();
@@ -148,7 +149,7 @@ public class JsonSchemaGenerator {
         case LIST:
         case SET:
             JsonSchema arraySchema = new JsonSchema();
-            arraySchema.setType("array");
+            arraySchema.setType(JsonSchemaType.ARRAY);
             arraySchema.setItems(baseSchema);
             if (field.getMinCount() != null && field.getMinCount() > 0) {
                 arraySchema.setMinItems(field.getMinCount());
@@ -162,7 +163,7 @@ public class JsonSchemaGenerator {
             return arraySchema;
         case MAP:
             JsonSchema mapSchema = new JsonSchema();
-            mapSchema.setType("object");
+            mapSchema.setType(JsonSchemaType.OBJECT);
             mapSchema.setAdditionalProperties(Boolean.TRUE);
             return mapSchema;
         default:
@@ -196,14 +197,14 @@ public class JsonSchemaGenerator {
                     definitions.put(refName, subSchema);
                 }
             } else {
-                schema.setType("object");
+                schema.setType(JsonSchemaType.OBJECT);
             }
             return schema;
         }
 
         if (field instanceof EnumDataItem) {
             EnumDataItem enumField = (EnumDataItem) field;
-            schema.setType("string");
+            schema.setType(JsonSchemaType.STRING);
             List<String> enumValues = buildEnumValues(enumField.getBaseEnum());
             if (!enumValues.isEmpty()) {
                 schema.setEnumValues(enumValues);
@@ -213,7 +214,7 @@ public class JsonSchemaGenerator {
 
         if (field instanceof XEnumDataItem) {
             XEnumDataItem xenumField = (XEnumDataItem) field;
-            schema.setType("string");
+            schema.setType(JsonSchemaType.STRING);
             List<String> enumValues = buildEnumValues(xenumField.getBaseXEnum().getBaseEnum());
             if (!enumValues.isEmpty()) {
                 schema.setEnumValues(enumValues);
@@ -224,7 +225,7 @@ public class JsonSchemaGenerator {
         // AlphanumericElementaryDataItem also covers AlphanumericEnumSetDataItem and XEnumSetDataItem
         if (field instanceof AlphanumericElementaryDataItem) {
             AlphanumericElementaryDataItem alphaField = (AlphanumericElementaryDataItem) field;
-            schema.setType("string");
+            schema.setType(JsonSchemaType.STRING);
             if (alphaField.getLength() > 0) {
                 schema.setMaxLength(alphaField.getLength());
             }
@@ -238,7 +239,7 @@ public class JsonSchemaGenerator {
         }
 
         if (field instanceof TemporalElementaryDataItem) {
-            schema.setType("string");
+            schema.setType(JsonSchemaType.STRING);
             switch (field.getBonaparteType()) {
             case "day":
                 schema.setFormat("date");
@@ -257,39 +258,39 @@ public class JsonSchemaGenerator {
         // BasicNumericElementaryDataItem also covers NumericElementaryDataItem and NumericEnumSetDataItem
         if (field instanceof BasicNumericElementaryDataItem) {
             BasicNumericElementaryDataItem numField = (BasicNumericElementaryDataItem) field;
-            schema.setType(numField.getDecimalDigits() == 0 ? "integer" : "number");
+            schema.setType(numField.getDecimalDigits() == 0 ? JsonSchemaType.INTEGER : JsonSchemaType.NUMBER);
             return schema;
         }
 
         if (field instanceof MiscElementaryDataItem) {
             switch (field.getBonaparteType()) {
             case "boolean":
-                schema.setType("boolean");
+                schema.setType(JsonSchemaType.BOOLEAN);
                 break;
             case "uuid":
-                schema.setType("string");
+                schema.setType(JsonSchemaType.STRING);
                 schema.setFormat("uuid");
                 break;
             case "char":
-                schema.setType("string");
+                schema.setType(JsonSchemaType.STRING);
                 schema.setMaxLength(1);
                 schema.setMinLength(1);
                 break;
             default:
-                schema.setType("string");
+                schema.setType(JsonSchemaType.STRING);
                 break;
             }
             return schema;
         }
 
         if (field instanceof BinaryElementaryDataItem) {
-            schema.setType("string");
+            schema.setType(JsonSchemaType.STRING);
             schema.setFormat("byte");
             return schema;
         }
 
         // Fallback for any unhandled types
-        schema.setType("string");
+        schema.setType(JsonSchemaType.STRING);
         return schema;
     }
 

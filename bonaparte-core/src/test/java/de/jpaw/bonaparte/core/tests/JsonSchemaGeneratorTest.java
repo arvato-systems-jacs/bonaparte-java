@@ -20,6 +20,7 @@ import org.junit.jupiter.api.Test;
 
 import de.jpaw.bonaparte.core.JsonSchemaGenerator;
 import de.jpaw.bonaparte.pojos.jsonschema.JsonSchema;
+import de.jpaw.bonaparte.pojos.jsonschema.JsonSchemaType;
 import de.jpaw.bonaparte.pojos.meta.BundleInformation;
 
 public class JsonSchemaGeneratorTest {
@@ -33,7 +34,7 @@ public class JsonSchemaGeneratorTest {
     @Test
     public void testGenerateSchemaTypeIsObject() {
         JsonSchema schema = JsonSchemaGenerator.generateSchema(BundleInformation.BClass.INSTANCE);
-        Assertions.assertEquals("object", schema.getType(), "Root schema type must be 'object'");
+        Assertions.assertEquals(JsonSchemaType.OBJECT, schema.getType(), "Root schema type must be 'object'");
     }
 
     @Test
@@ -76,7 +77,7 @@ public class JsonSchemaGeneratorTest {
         JsonSchema schema = JsonSchemaGenerator.generateSchema(BundleInformation.BClass.INSTANCE);
         JsonSchema nameSchema = schema.getProperties().get("name");
         Assertions.assertNotNull(nameSchema, "Schema for 'name' must not be null");
-        Assertions.assertEquals("string", nameSchema.getType(), "Type of 'name' must be 'string'");
+        Assertions.assertEquals(JsonSchemaType.STRING, nameSchema.getType(), "Type of 'name' must be 'string'");
     }
 
     @Test
@@ -84,9 +85,9 @@ public class JsonSchemaGeneratorTest {
         JsonSchema schema = JsonSchemaGenerator.generateSchema(BundleInformation.BClass.INSTANCE);
         JsonSchema packagesSchema = schema.getProperties().get("packages");
         Assertions.assertNotNull(packagesSchema, "Schema for 'packages' must not be null");
-        Assertions.assertEquals("array", packagesSchema.getType(), "Type of 'packages' must be 'array'");
+        Assertions.assertEquals(JsonSchemaType.ARRAY, packagesSchema.getType(), "Type of 'packages' must be 'array'");
         Assertions.assertNotNull(packagesSchema.getItems(), "Array items schema must not be null");
-        Assertions.assertEquals("string", packagesSchema.getItems().getType(),
+        Assertions.assertEquals(JsonSchemaType.STRING, packagesSchema.getItems().getType(),
                 "Type of array items for 'packages' must be 'string'");
     }
 
@@ -95,7 +96,7 @@ public class JsonSchemaGeneratorTest {
         JsonSchema schema = JsonSchemaGenerator.generateSchema(BundleInformation.BClass.INSTANCE);
         JsonSchema instantSchema = schema.getProperties().get("whenStatusChanged");
         Assertions.assertNotNull(instantSchema, "Schema for 'whenStatusChanged' must not be null");
-        Assertions.assertEquals("string", instantSchema.getType(),
+        Assertions.assertEquals(JsonSchemaType.STRING, instantSchema.getType(),
                 "Type of 'whenStatusChanged' must be 'string'");
         Assertions.assertEquals("date-time", instantSchema.getFormat(),
                 "Format of 'whenStatusChanged' must be 'date-time'");
@@ -106,7 +107,7 @@ public class JsonSchemaGeneratorTest {
         JsonSchema schema = JsonSchemaGenerator.generateSchema(BundleInformation.BClass.INSTANCE);
         JsonSchema enumSchema = schema.getProperties().get("bundleStatus");
         Assertions.assertNotNull(enumSchema, "Schema for 'bundleStatus' must not be null");
-        Assertions.assertEquals("string", enumSchema.getType(), "Type of 'bundleStatus' must be 'string'");
+        Assertions.assertEquals(JsonSchemaType.STRING, enumSchema.getType(), "Type of 'bundleStatus' must be 'string'");
         Assertions.assertNotNull(enumSchema.getEnumValues(),
                 "Enum values for 'bundleStatus' must not be null");
         Assertions.assertFalse(enumSchema.getEnumValues().isEmpty(),

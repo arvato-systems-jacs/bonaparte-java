@@ -4,6 +4,9 @@
 package jsonschema factoryId 29 {
     default private unsigned trim noControlChars;
 
+    /** JSON Schema type values as defined in JSON Schema Draft 2020-12. */
+    enum JsonSchemaType { STRING="string", NUMBER="number", INTEGER="integer", BOOLEAN="boolean", OBJECT="object", ARRAY="array", NULL="null" }
+
     /** Represents a single JSON Schema node.
      * Covers the most common JSON Schema Draft 2020-12 keywords needed to
      * describe Bonaparte class structures.
@@ -11,7 +14,7 @@ package jsonschema factoryId 29 {
     class JsonSchema classId 30 {
         optional Unicode(255)               title;                  // human-readable title
         optional Unicode(65535)             description;            // description
-        optional Ascii(20)                  type;                   // "string", "number", "integer", "boolean", "object", "array", "null"
+        optional enum JsonSchemaType        type;                   // schema type: string, number, integer, boolean, object, array, null
         optional Ascii(50)                  format;                 // date, date-time, time, uuid, byte, email, uri, etc.
         // String constraints
         optional Integer                    maxLength;
