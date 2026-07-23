@@ -518,7 +518,11 @@ public class MapParser extends AbstractMessageParser<MessageParserException> imp
         if (z instanceof String s) {
             // cannot use spu, use JSON instead of Bonaparte formatting
             try {
-                // return LocalDateTime.parse((String)z, di.getFractionalSeconds() > 0 ? ISODateTimeFormat.dateTime() : ISODateTimeFormat.dateTimeNoMillis());
+                // check for trailing Z as UTC time zone, and ignore it
+                int i = s.length() - 1;
+                if (i > 0 && s.charAt(i) == 'Z') {
+                    s = s.substring(0, i);
+                }
                 return LocalDateTime.parse(s);   // a more flexible parser
             } catch (IllegalArgumentException e) {
                 throw err(MessageParserException.ILLEGAL_TIME, di);
