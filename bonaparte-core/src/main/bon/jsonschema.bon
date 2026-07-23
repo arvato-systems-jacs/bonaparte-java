@@ -1,0 +1,41 @@
+/** JSON Schema representation as Bonaparte objects.
+ * Assigned to factoryId 29, classIds 30-40
+ */
+package jsonschema factoryId 29 {
+    default private unsigned trim noControlChars;
+
+    /** Represents a single JSON Schema node.
+     * Covers the most common JSON Schema Draft 2020-12 keywords needed to
+     * describe Bonaparte class structures.
+     */
+    class JsonSchema classId 30 {
+        optional Unicode(255)               title;                  // human-readable title
+        optional Unicode(65535)             description;            // description
+        optional Ascii(20)                  type;                   // "string", "number", "integer", "boolean", "object", "array", "null"
+        optional Ascii(50)                  format;                 // date, date-time, time, uuid, byte, email, uri, etc.
+        // String constraints
+        optional Integer                    maxLength;
+        optional Integer                    minLength;
+        optional Unicode(500)               pattern;
+        // Numeric constraints
+        optional Double                     minimum;
+        optional Double                     maximum;
+        optional Boolean                    exclusiveMinimum;
+        optional Boolean                    exclusiveMaximum;
+        // Enum constraint (field name differs from JSON "enum" keyword to avoid Java keyword clash)
+        optional Unicode(65535) List<>      enumValues;
+        // Object structure
+        optional (JsonSchema) Map<String>   properties;             // for "object" type
+        optional Ascii(255) List<>          requiredProperties;     // "required" keyword (renamed to avoid Java keyword clash)
+        optional Boolean                    additionalProperties;   // false to disallow additional properties
+        // Array constraints
+        optional (JsonSchema)               items;                  // for "array" type
+        optional Integer                    minItems;
+        optional Integer                    maxItems;
+        optional Boolean                    uniqueItems;
+        // Reference to another schema
+        optional Unicode(512)               ref;                    // "$ref" keyword
+        // Schema definitions (for referenced sub-schemas)
+        optional (JsonSchema) Map<String>   defs;                   // "$defs" keyword
+    }
+}
