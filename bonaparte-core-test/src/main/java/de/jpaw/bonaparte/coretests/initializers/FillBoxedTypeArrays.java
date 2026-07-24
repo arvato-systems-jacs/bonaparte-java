@@ -26,12 +26,12 @@ public class FillBoxedTypeArrays {
         BoxedTypeArrays x = new BoxedTypeArrays();
 
         Byte [] bytea = new Byte [950];
-        Arrays.fill(bytea, new Byte((byte)'X'));
+        Arrays.fill(bytea, Byte.valueOf((byte)'X'));
         bytea[666] = (byte)66;
         x.setByte1(bytea);
 
         Short [] shorta = new Short [195];
-        Arrays.fill(shorta, new Short((short)4242));
+        Arrays.fill(shorta, Short.valueOf((short)4242));
         shorta[88] = 1354;
         x.setShort1(shorta);
 
@@ -40,12 +40,12 @@ public class FillBoxedTypeArrays {
         x.setBoolean1(booleana);
 
         Character [] chara = new Character [333];
-        Arrays.fill(chara, new Character('Ä'));
+        Arrays.fill(chara, Character.valueOf('Ä'));
         chara[88] = '€';
         x.setChar1(chara);
 
         Character [] charb = new Character [55];
-        Arrays.fill(charb, new Character('\n'));
+        Arrays.fill(charb, Character.valueOf('\n'));
         charb[12] = '\r';
         x.setChar2(charb);
 
