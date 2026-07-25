@@ -64,10 +64,17 @@ public class MapParser extends AbstractMessageParser<MessageParserException> imp
         return new MessageParserException(errno, di.getName(), -1, currentClass);
     }
 
+    /** Creates a map parser for instances in seconds, requiring enum instance names. */
+    public MapParser(Map<String, Object> map) {
+        this(map, false, false, false);
+    }
+
+    /** Creates a map parser for instances in seconds or millis, using enum tokens or ordinals. */
     public MapParser(Map<String, Object> map, boolean instantInMillis) {
         this(map, instantInMillis, true, true);
     }
 
+    /** Creates a customer map parser with all attributes specified separately. */
     public MapParser(Map<String, Object> map, boolean instantInMillis, boolean readEnumOrdinals, boolean readEnumTokens) {
         this.map = map;
         // currentClass = map.get(MimeTypes.JSON_FIELD_PQON);
