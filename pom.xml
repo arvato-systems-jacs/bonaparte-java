@@ -324,6 +324,32 @@
     <profiles>
         <profile>
             <id>github</id>
+            <repositories>
+                <repository>
+                    <id>github</id>
+                    <url>https://maven.pkg.github.com/arvato-systems-jacs/jpaw</url>
+                    <snapshots>
+                        <enabled>false</enabled>
+                    </snapshots>
+                    <releases>
+                        <enabled>false</enabled>
+                    </releases>
+                </repository>
+            </repositories>
+
+            <pluginRepositories>
+                <pluginRepository>
+                    <id>github</id>
+                    <url>https://maven.pkg.github.com/arvato-systems-jacs/bonaparte-dsl</url>
+                    <snapshots>
+                        <enabled>false</enabled>
+                    </snapshots>
+                    <releases>
+                        <enabled>false</enabled>
+                    </releases>
+                </pluginRepository>
+            </pluginRepositories>
+
             <distributionManagement>
                 <repository>
                     <id>github</id>
