@@ -107,7 +107,7 @@ public class BonaPortableFactory {
     }
 
     // generalized factory: create an instance of the requested type, which is specified by partially qualified name.
-    // We receive PQCN (partially qualified class name) as parameter.
+    // We receive PQON (partially qualified object name) as parameter.
     // Anything before the last '.' is the Bonaparte package name (which is null is there is no '.').
     // The package determines the possible bundle specification, not-null bundles are loaded in their
     // own classloaders, so they can be unloaded again.
@@ -118,70 +118,46 @@ public class BonaPortableFactory {
 
     // new method, caches the BClass, to avoid reflection to create a new instance
     // parameter name is the PQON of the desired class
-    public static BonaPortable createObject(String pqon) throws MessageParserException {
-        final BonaPortableClass<? extends BonaPortable> bclass = mapByPQON.get(pqon);
-        if (bclass != null)
-            return bclass.newInstance();  // new instance without reflection
-
-        // determine fully qualified pqon of class and use reflection to retrieve an instance the first time
-        BonaPortable instance = createObjectSub(mapPqonToFqon(pqon));
-
-        // store it in the cache for next time
-        mapByPQON.putIfAbsent(pqon, instance.ret$BonaPortableClass());
-        return instance;
+    public static BonaPortable createObject(final String pqon) throws MessageParserException {
+        final BonaPortableClass<? extends BonaPortable> bclass = mapByPQON.computeIfAbsent(pqon, x -> getBclassOfFqon(mapPqonToFqon(pqon)));
+        return bclass.newInstance();  // new instance without reflection
     }
 
-    public static BonaPortable createObjectByFqon(String fqon) throws MessageParserException {
-        final BonaPortableClass<? extends BonaPortable> bclass = mapByFQON.get(fqon);
-        if (bclass != null)
-            return bclass.newInstance();  // new instance without reflection
-
-        // determine fully qualified pqon of class and use reflection to retrieve an instance the first time
-        BonaPortable instance = createObjectSub(fqon);
-
-        // store it in the cache for next time
-        mapByFQON.putIfAbsent(fqon, instance.ret$BonaPortableClass());
-        return instance;
+    public static BonaPortable createObjectByFqon(final String fqon) throws MessageParserException {
+        final BonaPortableClass<? extends BonaPortable> bclass = mapByFQON.computeIfAbsent(fqon, x -> getBclassOfFqon(fqon));
+        return bclass.newInstance();  // new instance without reflection
     }
 
-    private static BonaPortable createObjectSub(String FQON) throws MessageParserException {
+    private static BonaPortableClass<?> getBclassOfFqon(final String fqon) throws MessageParserException {
         try {
-            LOGGER.debug("Factory: loading class {}", FQON);
+            LOGGER.debug("Factory: loading class {}", fqon);
             final ClassLoader loader = classLoaderToUse == null ? Thread.currentThread().getContextClassLoader() : classLoaderToUse;
-            final Class<? extends BonaPortable> f = Class.forName(FQON, true, loader).asSubclass(BonaPortable.class);
-            return f.newInstance();
+
+            final Class<?> enumClass = Class.forName(fqon + "$BClass", true, loader);
+
+            final Object instance = Enum.valueOf(
+                enumClass.asSubclass(Enum.class),
+                "INSTANCE"
+            );
+            if (instance instanceof BonaPortableClass<?> bclass) {
+                return bclass;
+            }
+        } catch (ClassCastException e) {
+            LOGGER.error("{} is not a BonaPortable", fqon);
+            logClassloaders();
         } catch (ClassNotFoundException e) {
-            LOGGER.error("ClassNotFound exception for {}", FQON);
-            logClassloaders();
-        } catch (InstantiationException e) {
-            LOGGER.error("Instantiation exception for {}", FQON);
-            logClassloaders();
-        } catch (IllegalAccessException e) {
-            LOGGER.error("IllegalAccess exception for {}", FQON);
+            LOGGER.error("ClassNotFound exception for {}", fqon);
             logClassloaders();
         }
-        throw new MessageParserException(MessageParserException.CLASS_NOT_FOUND, "class", 0, FQON);
+        throw new MessageParserException(MessageParserException.CLASS_NOT_FOUND, "class", 0, fqon);
     }
 
-
-    public static BonaPortableClass<? extends BonaPortable> getBClassForPqon(String pqon) throws MessageParserException {
-        BonaPortableClass<? extends BonaPortable> bclass = mapByPQON.get(pqon);
-        if (bclass == null) {
-            bclass = createObjectSub(mapPqonToFqon(pqon)).ret$BonaPortableClass();
-            // also cache it now
-            mapByPQON.putIfAbsent(pqon, bclass);
-        }
-        return bclass;
+    public static BonaPortableClass<? extends BonaPortable> getBClassForPqon(final String pqon) throws MessageParserException {
+        return mapByPQON.computeIfAbsent(pqon, x -> getBclassOfFqon(mapPqonToFqon(pqon)));
     }
 
     public static BonaPortableClass<? extends BonaPortable> getBClassForFqon(String fqon) throws MessageParserException {
-        BonaPortableClass<? extends BonaPortable> bclass = mapByFQON.get(fqon);
-        if (bclass == null) {
-            bclass = createObjectSub(fqon).ret$BonaPortableClass();
-            // also cache it now
-            mapByFQON.putIfAbsent(fqon, bclass);
-        }
-        return bclass;
+        return mapByFQON.computeIfAbsent(fqon, x -> getBclassOfFqon(fqon));
     }
 
     // auto getters and setters only following
