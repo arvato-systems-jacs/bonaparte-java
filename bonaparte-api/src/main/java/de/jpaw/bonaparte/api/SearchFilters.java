@@ -7,6 +7,7 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.UUID;
 
 import de.jpaw.bonaparte.pojos.api.AndFilter;
 import de.jpaw.bonaparte.pojos.api.DayFilter;
@@ -20,6 +21,7 @@ import de.jpaw.bonaparte.pojos.api.SearchFilter;
 import de.jpaw.bonaparte.pojos.api.TimeFilter;
 import de.jpaw.bonaparte.pojos.api.TimestampFilter;
 import de.jpaw.bonaparte.pojos.api.TrueFilter;
+import de.jpaw.bonaparte.pojos.api.UuidFilter;
 import de.jpaw.bonaparte.pojos.api.StringFilter;
 
 /** Methods to combine search filters. All methods in this class immediately evaluate logical operations on true or false. */
@@ -124,6 +126,19 @@ public final class SearchFilters {
     public static TimeFilter equalsFilter(final String fieldName, final LocalTime value) {
         final TimeFilter f = new TimeFilter(fieldName);
         f.setEqualsValue(value);
+        return f;
+    }
+
+    public static UuidFilter equalsFilter(final String fieldName, final UUID value) {
+        final UuidFilter f = new UuidFilter(fieldName);
+        f.setEqualsValue(value);
+        return f;
+    }
+
+    // part 1a: LIKE (only for StringFilter)
+    public static StringFilter likeFilter(final String fieldName, final String value) {
+        final StringFilter f = new StringFilter(fieldName);
+        f.setLikeValue(value);
         return f;
     }
 
@@ -259,7 +274,7 @@ public final class SearchFilters {
         return f;
     }
 
-    public static StringFilter StringFilter(final String fieldName, final Collection<String> values) {
+    public static StringFilter stringFilter(final String fieldName, final Collection<String> values) {
         if (values == null || values.isEmpty()) {
             throw new NullPointerException("Need at least one value for IN filter");
         }
