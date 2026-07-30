@@ -47,8 +47,8 @@
         <jakarta.persistence-api.version>3.2.0</jakarta.persistence-api.version>
 
         <eclipselink.version>4.0.9</eclipselink.version>
-        <hibernate.version>7.1.17.Final</hibernate.version>
-        <hibernate-types.version>3.9.0</hibernate-types.version>  <!-- for io.hypersistence:hypersistence-utils-hibernate-63 -->
+        <hibernate.version>7.4.5.Final</hibernate.version>
+        <hibernate-types.version>3.15.4</hibernate-types.version>  <!-- for io.hypersistence:hypersistence-utils-hibernate-63 -->
 
         <postgres.driver.version>42.7.10</postgres.driver.version>
     </properties>
