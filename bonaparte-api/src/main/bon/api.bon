@@ -164,11 +164,12 @@ package api factoryId 25 {
      * If both parameters are null or both are not equal to null, an "invalid search filter" parameter error is returned.
      */
     final class StringFilter classId 27 extends FieldFilter {
-        optional Unicode(80)                        equalsValue;
-        optional Unicode(80)                        lowerBound;
-        optional Unicode(80)                        upperBound;
-        optional Unicode(80)                        likeValue;
-        required Unicode(80) List<>                 valueList;
+        optional Unicode(255)                       equalsValue;
+        optional Unicode(255)                       lowerBound;
+        optional Unicode(255)                       upperBound;
+        optional Unicode(255)                       likeValue;
+        required Unicode(255) List<>                valueList;
+        optional Boolean                            caseInsensitive;
     }
 
     /** Provides filtering for integral values. Exactly one of the fields must be not null.

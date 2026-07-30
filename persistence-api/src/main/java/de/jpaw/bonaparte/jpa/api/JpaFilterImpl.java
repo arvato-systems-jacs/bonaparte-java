@@ -5,11 +5,17 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
+import jakarta.annotation.Nonnull;
 import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.Expression;
 import jakarta.persistence.criteria.Path;
 import jakarta.persistence.criteria.Predicate;
 
+import de.jpaw.bonaparte.core.ObjectValidationException;
 import de.jpaw.bonaparte.pojos.api.BooleanFilter;
 import de.jpaw.bonaparte.pojos.api.ByteArrayFilter;
 import de.jpaw.bonaparte.pojos.api.ByteFilter;
@@ -29,161 +35,233 @@ import de.jpaw.bonaparte.pojos.api.TimeFilter;
 import de.jpaw.bonaparte.pojos.api.TimestampFilter;
 import de.jpaw.bonaparte.pojos.api.UuidFilter;
 import de.jpaw.dp.Singleton;
+import de.jpaw.util.ApplicationException;
 
 @Singleton
 public class JpaFilterImpl implements JpaFilter {
 
+    private List<String> toLowerCase(@Nonnull final List<String> list, @Nonnull final Locale locale) {
+        final List<String> lowerList = new ArrayList<>(list.size());
+        for (final String s : list) {
+            lowerList.add(s.toLowerCase(locale));
+        }
+        return lowerList;
+    }
+
     @Override
-    @SuppressWarnings("unchecked")
     public Predicate applyFilter(CriteriaBuilder cb, Path<?> path, FieldFilter filter) {
         return switch (filter) {
             case NullFilter f -> cb.isNull(path);
             case BooleanFilter f -> cb.equal(path, Boolean.valueOf(f.getBooleanValue()));
             case StringFilter f -> {
-                if (f.getValueList() != null)
-                    yield path.in(f.getValueList());
-                else if (f.getEqualsValue() != null)
-                    yield cb.equal(path, f.getEqualsValue());
-                else if (f.getLikeValue() != null)
-                    yield cb.like((Path<String>) path, f.getLikeValue());
-                else if (f.getLowerBound() == null)
-                    yield cb.lessThanOrEqualTo((Path<String>) path, f.getUpperBound());
-                else if (f.getUpperBound() == null)
-                    yield cb.greaterThanOrEqualTo((Path<String>) path, f.getLowerBound());
-                else
-                    yield cb.between((Path<String>) path, f.getLowerBound(), f.getUpperBound());
+                if (!Boolean.TRUE.equals(f.getCaseInsensitive())) {
+                    final Path<String> stringPath = (Path<String>) path;
+                    if (f.getValueList() != null)
+                        yield path.in(f.getValueList());
+                    else if (f.getEqualsValue() != null)
+                        yield cb.equal(path, f.getEqualsValue());
+                    else if (f.getLikeValue() != null)
+                        yield cb.like(stringPath, f.getLikeValue());
+                    else if (f.getUpperBound() != null) {
+                        if (f.getLowerBound() != null) {
+                            yield cb.between(stringPath, f.getLowerBound(), f.getUpperBound());
+                        } else {
+                            yield cb.lessThanOrEqualTo(stringPath, f.getUpperBound());
+                        }
+                    } else {
+                        if (f.getLowerBound() != null) {
+                            yield cb.greaterThanOrEqualTo(stringPath, f.getLowerBound());
+                        } else {
+                            throw new ApplicationException(ObjectValidationException.FILTER_WITHOUT_NONNULL_FIELDS, filter.getFieldName());
+                        }
+                    }
+                } else {
+                    final Expression<String> stringExpr = cb.lower((Path<String>) path);
+                    if (f.getValueList() != null)
+                        yield stringExpr.in(toLowerCase(f.getValueList(), Locale.ROOT));
+                    else if (f.getEqualsValue() != null)
+                        yield cb.equal(stringExpr, f.getEqualsValue().toLowerCase(Locale.ROOT));
+                    else if (f.getLikeValue() != null)
+                        yield cb.like(stringExpr, f.getLikeValue().toLowerCase(Locale.ROOT));
+                    else if (f.getUpperBound() != null) {
+                        if (f.getLowerBound() != null) {
+                            yield cb.between(stringExpr, f.getLowerBound().toLowerCase(Locale.ROOT), f.getUpperBound().toLowerCase(Locale.ROOT));
+                        } else {
+                            yield cb.lessThanOrEqualTo(stringExpr, f.getUpperBound().toLowerCase(Locale.ROOT));
+                        }
+                    } else {
+                        if (f.getLowerBound() != null) {
+                            yield cb.greaterThanOrEqualTo(stringExpr, f.getLowerBound().toLowerCase(Locale.ROOT));
+                        } else {
+                            throw new ApplicationException(ObjectValidationException.FILTER_WITHOUT_NONNULL_FIELDS, filter.getFieldName());
+                        }
+                    }
+                }
             }
             case IntFilter f -> {
+                final Path<Integer> intPath = (Path<Integer>) path;
                 if (f.getValueList() != null)
-                    yield path.in(f.getValueList());
+                    yield intPath.in(f.getValueList());
                 else if (f.getEqualsValue() != null)
-                    yield cb.equal(path, f.getEqualsValue());
-                else if (f.getLowerBound() == null)
-                    yield cb.lessThanOrEqualTo((Path<Integer>) path, f.getUpperBound());
-                else if (f.getUpperBound() == null)
-                    yield cb.greaterThanOrEqualTo((Path<Integer>) path, f.getLowerBound());
+                    yield cb.equal(intPath, f.getEqualsValue());
+                else if (f.getLowerBound() != null && f.getUpperBound() != null)
+                    yield cb.between(intPath, f.getLowerBound(), f.getUpperBound());
+                else if (f.getLowerBound() != null)
+                    yield cb.greaterThanOrEqualTo(intPath, f.getLowerBound());
+                else if (f.getUpperBound() != null)
+                    yield cb.lessThanOrEqualTo(intPath, f.getUpperBound());
                 else
-                    yield cb.between((Path<Integer>) path, f.getLowerBound(), f.getUpperBound());
+                    throw new ApplicationException(ObjectValidationException.FILTER_WITHOUT_NONNULL_FIELDS, filter.getFieldName());
             }
             case LongFilter f -> {
+                final Path<Long> longPath = (Path<Long>) path;
                 if (f.getValueList() != null)
-                    yield path.in(f.getValueList());
+                    yield longPath.in(f.getValueList());
                 else if (f.getEqualsValue() != null)
-                    yield cb.equal(path, f.getEqualsValue());
-                else if (f.getLowerBound() == null)
-                    yield cb.lessThanOrEqualTo((Path<Long>) path, f.getUpperBound());
-                else if (f.getUpperBound() == null)
-                    yield cb.greaterThanOrEqualTo((Path<Long>) path, f.getLowerBound());
+                    yield cb.equal(longPath, f.getEqualsValue());
+                else if (f.getLowerBound() != null && f.getUpperBound() != null)
+                    yield cb.between(longPath, f.getLowerBound(), f.getUpperBound());
+                else if (f.getLowerBound() != null)
+                    yield cb.greaterThanOrEqualTo(longPath, f.getLowerBound());
+                else if (f.getUpperBound() != null)
+                    yield cb.lessThanOrEqualTo(longPath, f.getUpperBound());
                 else
-                    yield cb.between((Path<Long>) path, f.getLowerBound(), f.getUpperBound());
+                    throw new ApplicationException(ObjectValidationException.FILTER_WITHOUT_NONNULL_FIELDS, filter.getFieldName());
             }
             case DecimalFilter f -> {
+                final Path<BigDecimal> decimalPath = (Path<BigDecimal>) path;
                 if (f.getValueList() != null)
-                    yield path.in(f.getValueList());
+                    yield decimalPath.in(f.getValueList());
                 else if (f.getEqualsValue() != null)
-                    yield cb.equal(path, f.getEqualsValue());
-                else if (f.getLowerBound() == null)
-                    yield cb.lessThanOrEqualTo((Path<BigDecimal>) path, f.getUpperBound());
-                else if (f.getUpperBound() == null)
-                    yield cb.greaterThanOrEqualTo((Path<BigDecimal>) path, f.getLowerBound());
+                    yield cb.equal(decimalPath, f.getEqualsValue());
+                else if (f.getLowerBound() != null && f.getUpperBound() != null)
+                    yield cb.between(decimalPath, f.getLowerBound(), f.getUpperBound());
+                else if (f.getLowerBound() != null)
+                    yield cb.greaterThanOrEqualTo(decimalPath, f.getLowerBound());
+                else if (f.getUpperBound() != null)
+                    yield cb.lessThanOrEqualTo(decimalPath, f.getUpperBound());
                 else
-                    yield cb.between((Path<BigDecimal>) path, f.getLowerBound(), f.getUpperBound());
+                    throw new ApplicationException(ObjectValidationException.FILTER_WITHOUT_NONNULL_FIELDS, filter.getFieldName());
             }
             case DayFilter f -> {
+                final Path<LocalDate> dayPath = (Path<LocalDate>) path;
                 if (f.getValueList() != null)
-                    yield path.in(f.getValueList());
+                    yield dayPath.in(f.getValueList());
                 else if (f.getEqualsValue() != null)
-                    yield cb.equal(path, f.getEqualsValue());
-                else if (f.getLowerBound() == null)
-                    yield cb.lessThanOrEqualTo((Path<LocalDate>) path, f.getUpperBound());
-                else if (f.getUpperBound() == null)
-                    yield cb.greaterThanOrEqualTo((Path<LocalDate>) path, f.getLowerBound());
+                    yield cb.equal(dayPath, f.getEqualsValue());
+                else if (f.getLowerBound() != null && f.getUpperBound() != null)
+                    yield cb.between(dayPath, f.getLowerBound(), f.getUpperBound());
+                else if (f.getLowerBound() != null)
+                    yield cb.greaterThanOrEqualTo(dayPath, f.getLowerBound());
+                else if (f.getUpperBound() != null)
+                    yield cb.lessThanOrEqualTo(dayPath, f.getUpperBound());
                 else
-                    yield cb.between((Path<LocalDate>) path, f.getLowerBound(), f.getUpperBound());
+                    throw new ApplicationException(ObjectValidationException.FILTER_WITHOUT_NONNULL_FIELDS, filter.getFieldName());
             }
             case TimestampFilter f -> {
+                final Path<LocalDateTime> timestampPath = (Path<LocalDateTime>) path;
                 if (f.getValueList() != null)
-                    yield path.in(f.getValueList());
+                    yield timestampPath.in(f.getValueList());
                 else if (f.getEqualsValue() != null)
-                    yield cb.equal(path, f.getEqualsValue());
-                else if (f.getLowerBound() == null)
-                    yield cb.lessThanOrEqualTo((Path<LocalDateTime>) path, f.getUpperBound());
-                else if (f.getUpperBound() == null)
-                    yield cb.greaterThanOrEqualTo((Path<LocalDateTime>) path, f.getLowerBound());
+                    yield cb.equal(timestampPath, f.getEqualsValue());
+                else if (f.getLowerBound() != null && f.getUpperBound() != null)
+                    yield cb.between(timestampPath, f.getLowerBound(), f.getUpperBound());
+                else if (f.getLowerBound() != null)
+                    yield cb.greaterThanOrEqualTo(timestampPath, f.getLowerBound());
+                else if (f.getUpperBound() != null)
+                    yield cb.lessThanOrEqualTo(timestampPath, f.getUpperBound());
                 else
-                    yield cb.between((Path<LocalDateTime>) path, f.getLowerBound(), f.getUpperBound());
+                    throw new ApplicationException(ObjectValidationException.FILTER_WITHOUT_NONNULL_FIELDS, filter.getFieldName());
             }
             case InstantFilter f -> {
+                final Path<Instant> instantPath = (Path<Instant>) path;
                 if (f.getValueList() != null)
-                    yield path.in(f.getValueList());
+                    yield instantPath.in(f.getValueList());
                 else if (f.getEqualsValue() != null)
-                    yield cb.equal(path, f.getEqualsValue());
-                else if (f.getLowerBound() == null)
-                    yield cb.lessThanOrEqualTo((Path<Instant>) path, f.getUpperBound());
-                else if (f.getUpperBound() == null)
-                    yield cb.greaterThanOrEqualTo((Path<Instant>) path, f.getLowerBound());
+                    yield cb.equal(instantPath, f.getEqualsValue());
+                else if (f.getLowerBound() != null && f.getUpperBound() != null)
+                    yield cb.between(instantPath, f.getLowerBound(), f.getUpperBound());
+                else if (f.getLowerBound() != null)
+                    yield cb.greaterThanOrEqualTo(instantPath, f.getLowerBound());
+                else if (f.getUpperBound() != null)
+                    yield cb.lessThanOrEqualTo(instantPath, f.getUpperBound());
                 else
-                    yield cb.between((Path<Instant>) path, f.getLowerBound(), f.getUpperBound());
+                    throw new ApplicationException(ObjectValidationException.FILTER_WITHOUT_NONNULL_FIELDS, filter.getFieldName());
             }
             case TimeFilter f -> {
+                final Path<LocalTime> timePath = (Path<LocalTime>) path;
                 if (f.getValueList() != null)
-                    yield path.in(f.getValueList());
+                    yield timePath.in(f.getValueList());
                 else if (f.getEqualsValue() != null)
-                    yield cb.equal(path, f.getEqualsValue());
-                else if (f.getLowerBound() == null)
-                    yield cb.lessThanOrEqualTo((Path<LocalTime>) path, f.getUpperBound());
-                else if (f.getUpperBound() == null)
-                    yield cb.greaterThanOrEqualTo((Path<LocalTime>) path, f.getLowerBound());
+                    yield cb.equal(timePath, f.getEqualsValue());
+                else if (f.getLowerBound() != null && f.getUpperBound() != null)
+                    yield cb.between(timePath, f.getLowerBound(), f.getUpperBound());
+                else if (f.getLowerBound() != null)
+                    yield cb.greaterThanOrEqualTo(timePath, f.getLowerBound());
+                else if (f.getUpperBound() != null)
+                    yield cb.lessThanOrEqualTo(timePath, f.getUpperBound());
                 else
-                    yield cb.between((Path<LocalTime>) path, f.getLowerBound(), f.getUpperBound());
+                    throw new ApplicationException(ObjectValidationException.FILTER_WITHOUT_NONNULL_FIELDS, filter.getFieldName());
             }
             case ByteFilter f -> {
+                final Path<Byte> bytePath = (Path<Byte>) path;
                 if (f.getValueList() != null)
-                    yield path.in(f.getValueList());
+                    yield bytePath.in(f.getValueList());
                 else if (f.getEqualsValue() != null)
-                    yield cb.equal(path, f.getEqualsValue());
-                else if (f.getLowerBound() == null)
-                    yield cb.lessThanOrEqualTo((Path<Byte>) path, f.getUpperBound());
-                else if (f.getUpperBound() == null)
-                    yield cb.greaterThanOrEqualTo((Path<Byte>) path, f.getLowerBound());
+                    yield cb.equal(bytePath, f.getEqualsValue());
+                else if (f.getLowerBound() != null && f.getUpperBound() != null)
+                    yield cb.between(bytePath, f.getLowerBound(), f.getUpperBound());
+                else if (f.getLowerBound() != null)
+                    yield cb.greaterThanOrEqualTo(bytePath, f.getLowerBound());
+                else if (f.getUpperBound() != null)
+                    yield cb.lessThanOrEqualTo(bytePath, f.getUpperBound());
                 else
-                    yield cb.between((Path<Byte>) path, f.getLowerBound(), f.getUpperBound());
+                    throw new ApplicationException(ObjectValidationException.FILTER_WITHOUT_NONNULL_FIELDS, filter.getFieldName());
             }
             case ShortFilter f -> {
+                final Path<Short> shortPath = (Path<Short>) path;
                 if (f.getValueList() != null)
-                    yield path.in(f.getValueList());
+                    yield shortPath.in(f.getValueList());
                 else if (f.getEqualsValue() != null)
-                    yield cb.equal(path, f.getEqualsValue());
-                else if (f.getLowerBound() == null)
-                    yield cb.lessThanOrEqualTo((Path<Short>) path, f.getUpperBound());
-                else if (f.getUpperBound() == null)
-                    yield cb.greaterThanOrEqualTo((Path<Short>) path, f.getLowerBound());
+                    yield cb.equal(shortPath, f.getEqualsValue());
+                else if (f.getLowerBound() != null && f.getUpperBound() != null)
+                    yield cb.between(shortPath, f.getLowerBound(), f.getUpperBound());
+                else if (f.getLowerBound() != null)
+                    yield cb.greaterThanOrEqualTo(shortPath, f.getLowerBound());
+                else if (f.getUpperBound() != null)
+                    yield cb.lessThanOrEqualTo(shortPath, f.getUpperBound());
                 else
-                    yield cb.between((Path<Short>) path, f.getLowerBound(), f.getUpperBound());
+                    throw new ApplicationException(ObjectValidationException.FILTER_WITHOUT_NONNULL_FIELDS, filter.getFieldName());
             }
             case DoubleFilter f -> {
+                final Path<Double> doublePath = (Path<Double>) path;
                 if (f.getValueList() != null)
-                    yield path.in(f.getValueList());
+                    yield doublePath.in(f.getValueList());
                 else if (f.getEqualsValue() != null)
-                    yield cb.equal(path, f.getEqualsValue());
-                else if (f.getLowerBound() == null)
-                    yield cb.lessThanOrEqualTo((Path<Double>) path, f.getUpperBound());
-                else if (f.getUpperBound() == null)
-                    yield cb.greaterThanOrEqualTo((Path<Double>) path, f.getLowerBound());
+                    yield cb.equal(doublePath, f.getEqualsValue());
+                else if (f.getLowerBound() != null && f.getUpperBound() != null)
+                    yield cb.between(doublePath, f.getLowerBound(), f.getUpperBound());
+                else if (f.getLowerBound() != null)
+                    yield cb.greaterThanOrEqualTo(doublePath, f.getLowerBound());
+                else if (f.getUpperBound() != null)
+                    yield cb.lessThanOrEqualTo(doublePath, f.getUpperBound());
                 else
-                    yield cb.between((Path<Double>) path, f.getLowerBound(), f.getUpperBound());
+                    throw new ApplicationException(ObjectValidationException.FILTER_WITHOUT_NONNULL_FIELDS, filter.getFieldName());
             }
             case FloatFilter f -> {
+                final Path<Float> floatPath = (Path<Float>) path;
                 if (f.getValueList() != null)
-                    yield path.in(f.getValueList());
+                    yield floatPath.in(f.getValueList());
                 else if (f.getEqualsValue() != null)
-                    yield cb.equal(path, f.getEqualsValue());
-                else if (f.getLowerBound() == null)
-                    yield cb.lessThanOrEqualTo((Path<Float>) path, f.getUpperBound());
-                else if (f.getUpperBound() == null)
-                    yield cb.greaterThanOrEqualTo((Path<Float>) path, f.getLowerBound());
+                    yield cb.equal(floatPath, f.getEqualsValue());
+                else if (f.getLowerBound() != null && f.getUpperBound() != null)
+                    yield cb.between(floatPath, f.getLowerBound(), f.getUpperBound());
+                else if (f.getLowerBound() != null)
+                    yield cb.greaterThanOrEqualTo(floatPath, f.getLowerBound());
+                else if (f.getUpperBound() != null)
+                    yield cb.lessThanOrEqualTo(floatPath, f.getUpperBound());
                 else
-                    yield cb.between((Path<Float>) path, f.getLowerBound(), f.getUpperBound());
+                    throw new ApplicationException(ObjectValidationException.FILTER_WITHOUT_NONNULL_FIELDS, filter.getFieldName());
             }
             case UuidFilter f -> {
                 if (f.getValueList() != null)

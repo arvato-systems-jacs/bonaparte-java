@@ -16,7 +16,6 @@
 package de.jpaw.bonaparte.core;
 
 import de.jpaw.util.ApplicationException;
-import de.jpaw.util.ApplicationException.ApplicationLevelType;
 
 /**
  * The ObjectValidationException class.
@@ -51,6 +50,7 @@ public class ObjectValidationException extends ApplicationException {
     public static final int NOT_FREEZABLE               = OFFSET + 21;
     public static final int OBJECT_IS_FROZEN            = OFFSET + 22;
     public static final int IS_IMMUTABLE                = OFFSET + 23;
+    public static final int FILTER_WITHOUT_NONNULL_FIELDS = OFFSET + 24;
 
     // JSON composer codes
     public static final int UNSUPPORTED_MAP_KEY_TYPE    = ILE_OFFSET + 51;
@@ -77,6 +77,7 @@ public class ObjectValidationException extends ApplicationException {
         registerCode(NOT_FREEZABLE             , "This object cannot be turned into immutable state");
         registerCode(OBJECT_IS_FROZEN          , "Object instance is frozen and cannot be modified");
         registerCode(IS_IMMUTABLE              , "This object cannot be turned into mutable state");
+        registerCode(FILTER_WITHOUT_NONNULL_FIELDS, "A seach filter was provided without any non-null fields");
 
         // JSON map codes
         registerCode(UNSUPPORTED_MAP_KEY_TYPE  , "This map key type is currently not supported");
