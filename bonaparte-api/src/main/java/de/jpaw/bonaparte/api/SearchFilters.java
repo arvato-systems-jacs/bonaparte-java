@@ -20,7 +20,7 @@ import de.jpaw.bonaparte.pojos.api.SearchFilter;
 import de.jpaw.bonaparte.pojos.api.TimeFilter;
 import de.jpaw.bonaparte.pojos.api.TimestampFilter;
 import de.jpaw.bonaparte.pojos.api.TrueFilter;
-import de.jpaw.bonaparte.pojos.api.UnicodeFilter;
+import de.jpaw.bonaparte.pojos.api.StringFilter;
 
 /** Methods to combine search filters. All methods in this class immediately evaluate logical operations on true or false. */
 public final class SearchFilters {
@@ -97,8 +97,8 @@ public final class SearchFilters {
         return f;
     }
 
-    public static UnicodeFilter equalsFilter(final String fieldName, final String value) {
-        final UnicodeFilter f = new UnicodeFilter(fieldName);
+    public static StringFilter equalsFilter(final String fieldName, final String value) {
+        final StringFilter f = new StringFilter(fieldName);
         f.setEqualsValue(value);
         return f;
     }
@@ -157,11 +157,11 @@ public final class SearchFilters {
         return f;
     }
 
-    public static UnicodeFilter rangeFilter(final String fieldName, final String lower, final String upper) {
+    public static StringFilter rangeFilter(final String fieldName, final String lower, final String upper) {
         if (lower == null && upper == null) {
             throw new NullPointerException("Cannot build range filter with both null parameters");
         }
-        final UnicodeFilter f = new UnicodeFilter(fieldName);
+        final StringFilter f = new StringFilter(fieldName);
         if (lower != null && lower.equals(upper)) {
             f.setEqualsValue(lower);
         } else {
@@ -259,11 +259,11 @@ public final class SearchFilters {
         return f;
     }
 
-    public static UnicodeFilter unicodeFilter(final String fieldName, final Collection<String> values) {
+    public static StringFilter StringFilter(final String fieldName, final Collection<String> values) {
         if (values == null || values.isEmpty()) {
             throw new NullPointerException("Need at least one value for IN filter");
         }
-        final UnicodeFilter f = new UnicodeFilter(fieldName);
+        final StringFilter f = new StringFilter(fieldName);
         if (values.size() == 1) {
             f.setEqualsValue(values.iterator().next());
         } else if (values instanceof List) {

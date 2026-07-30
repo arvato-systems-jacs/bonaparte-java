@@ -1,6 +1,15 @@
 package de.jpaw.bonaparte.jpa.api;
 
-import de.jpaw.bonaparte.pojos.api.AsciiFilter;
+import java.math.BigDecimal;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.Path;
+import jakarta.persistence.criteria.Predicate;
+
 import de.jpaw.bonaparte.pojos.api.BooleanFilter;
 import de.jpaw.bonaparte.pojos.api.ByteArrayFilter;
 import de.jpaw.bonaparte.pojos.api.ByteFilter;
@@ -15,19 +24,11 @@ import de.jpaw.bonaparte.pojos.api.IntFilter;
 import de.jpaw.bonaparte.pojos.api.LongFilter;
 import de.jpaw.bonaparte.pojos.api.NullFilter;
 import de.jpaw.bonaparte.pojos.api.ShortFilter;
+import de.jpaw.bonaparte.pojos.api.StringFilter;
 import de.jpaw.bonaparte.pojos.api.TimeFilter;
 import de.jpaw.bonaparte.pojos.api.TimestampFilter;
-import de.jpaw.bonaparte.pojos.api.UnicodeFilter;
 import de.jpaw.bonaparte.pojos.api.UuidFilter;
 import de.jpaw.dp.Singleton;
-import java.math.BigDecimal;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.Path;
-import jakarta.persistence.criteria.Predicate;
 
 @Singleton
 public class JpaFilterImpl implements JpaFilter {
@@ -38,21 +39,7 @@ public class JpaFilterImpl implements JpaFilter {
         return switch (filter) {
             case NullFilter f -> cb.isNull(path);
             case BooleanFilter f -> cb.equal(path, Boolean.valueOf(f.getBooleanValue()));
-            case AsciiFilter f -> {
-                if (f.getValueList() != null)
-                    yield path.in(f.getValueList());
-                else if (f.getEqualsValue() != null)
-                    yield cb.equal(path, f.getEqualsValue());
-                else if (f.getLikeValue() != null)
-                    yield cb.like((Path<String>) path, f.getLikeValue());
-                else if (f.getLowerBound() == null)
-                    yield cb.lessThanOrEqualTo((Path<String>) path, f.getUpperBound());
-                else if (f.getUpperBound() == null)
-                    yield cb.greaterThanOrEqualTo((Path<String>) path, f.getLowerBound());
-                else
-                    yield cb.between((Path<String>) path, f.getLowerBound(), f.getUpperBound());
-            }
-            case UnicodeFilter f -> {
+            case StringFilter f -> {
                 if (f.getValueList() != null)
                     yield path.in(f.getValueList());
                 else if (f.getEqualsValue() != null)

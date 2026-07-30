@@ -158,19 +158,12 @@ package api factoryId 25 {
         required boolean                            booleanValue;
     }
 
-    /** Provides filtering for ASCII text fields (IDs, tokens). Exactly one of the parameters equalsValue and likeValue must be provided, the other one must be null.
-     * If both parameters are null or both are not equal to null, an "invalid search filter" parameter error is returned. */
-    final class AsciiFilter classId 26 extends FieldFilter {
-        optional Ascii(80)                          equalsValue;
-        optional Ascii(80)                          lowerBound;
-        optional Ascii(80)                          upperBound;
-        optional Ascii(80)                          likeValue;
-        required Ascii(80) List<>                   valueList;
-    }
-
-    /** Provides filtering for Unicode text fields (IDs, tokens). Exactly one of the parameters equalsValue and likeValue must be provided, the other one must be null.
-     * If both parameters are null or both are not equal to null, an "invalid search filter" parameter error is returned. */
-    final class UnicodeFilter classId 27 extends FieldFilter {
+    /**
+     * Provides filtering for ASCII or Unicode text fields (IDs, tokens).
+     * Exactly one of the parameters equalsValue, likeValue, bounds, or the valueList must be provided, the others one must be null.
+     * If both parameters are null or both are not equal to null, an "invalid search filter" parameter error is returned.
+     */
+    final class StringFilter classId 27 extends FieldFilter {
         optional Unicode(80)                        equalsValue;
         optional Unicode(80)                        lowerBound;
         optional Unicode(80)                        upperBound;
