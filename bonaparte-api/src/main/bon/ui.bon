@@ -40,6 +40,7 @@ package ui factoryId 25 {
         required identifier                         fieldName;              // field name in dotted notation (data.component.field[arrayIndex])
         optional Boolean                            negate;                 // if Boolean.TRUE, then negate the filter
         optional Unicode(32)                        qualifier;              // specifies custom implementation - required for UIFilterType C but can be used for standard filter types as well
+        optional Boolean                            caseInsensitive;        // only for StringFilter: ignores case when comparing
     }
 
     /** User specific configuration for a column. */
