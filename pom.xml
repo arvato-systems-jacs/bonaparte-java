@@ -9,7 +9,7 @@
     </parent>
 
     <artifactId>bonaparte-base</artifactId>
-    <version>7.1.3-SNAPSHOT</version>
+    <version>7.2.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <description>build master for BONAPARTE based projects</description>
@@ -314,7 +314,6 @@
         <module>persistence-bom/pom.xml</module>
         <module>persistence-core/pom.xml</module>
         <module>persistence-postgres/pom.xml</module>
-        <module>persistence-api/pom.xml</module>
         <module>persistence-refs/pom.xml</module>
         <module>persistence-hibernate/pom.xml</module>
         <module>persistence-eclipselink/pom.xml</module>
