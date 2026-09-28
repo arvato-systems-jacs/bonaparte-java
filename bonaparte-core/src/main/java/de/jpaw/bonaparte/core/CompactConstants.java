@@ -44,7 +44,7 @@ package de.jpaw.bonaparte.core;
  *          ae          subobject end
  *          af          empty (zero character String)    before 3.6.0 also: empty byte [] or empty ByteArray
  *
- *          bx    ISO8859-1 string, 1..16 characters length (formerly restricted to ASCII)
+ *          bx    ISO8859-1 string, 1..16 characters length (length = x + 1, empty string is 0xaf) (formerly restricted to ASCII)
  *          cx  positive 2 byte integer:    x(nn) 0..4095
  *
  *          dx   reserved for floating point formats:
