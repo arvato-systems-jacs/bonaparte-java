@@ -944,6 +944,9 @@ public abstract class AbstractCompactParser<E extends Exception>  extends Settin
             return readDateTime("$jsonElemDateTime", false);
         case COMPACT_DATETIME_MILLIS:       //0xdc
             return readDateTime("$jsonElemDateTimeMs", true);
+        case COMPACT_INSTANT:               //0xfb
+            final long epochMillis = readLong(needToken(), "$jsonElemInstant");
+            return Instant.ofEpochMilli(epochMillis);
 
         case OBJECT_AGAIN:                  //0xdd
         case OBJECT_BEGIN_ID:               //0xde

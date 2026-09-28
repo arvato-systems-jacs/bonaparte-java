@@ -469,17 +469,18 @@ public abstract class AbstractCompactComposer extends AbstractMessageComposer<IO
     // entry which does not need a reference
     protected void longOut(long n) throws IOException {
         int nn = (int)n;
-        if (nn == n)
+        if (nn == n) {
             intOut((int)n);
-        else {
-            if ((n & 0xffff0000L) == (n > 0 ? 0 : 0xffff0000L)) {
+        } else {
+            // check if n fits into a 6 byte integer without data loss.
+            if ((n & 0xffff8000L) == (n >= 0 ? 0L : 0xffff8000L)) {
                 out.writeByte(INT_6BYTE);
                 out.writeShort((short)(n >> 32));
                 out.writeInt((int)n);
                 return;
             }
             // default
-            out.writeByte(INT_8BYTE);  // TODO: optimize for 5 or 7 bytes here!
+            out.writeByte(INT_8BYTE);
             out.writeLong(n);
         }
     }
@@ -943,6 +944,8 @@ public abstract class AbstractCompactComposer extends AbstractMessageComposer<IO
         }
         if (obj instanceof Temporal) {
             if (obj instanceof Instant in) {
+                // longOut(in.toEpochMilli());  // without a prefix, this is not distinguishable from a long. So we add a prefix.
+                out.writeByte(COMPACT_INSTANT);
                 longOut(in.toEpochMilli());
                 return;
             }

@@ -78,7 +78,7 @@ package de.jpaw.bonaparte.core;
  *          f1..f9  fractional, with 1..9 decimal places, next is big integer of mantissa
  *
  *          fa  map begin (next is number of entries)
- *          fb  RESERVED (future use: multiple nulls, next is repeat count)
+ *          fb  Instant with millisecond precision (next is long, milliseconds since epoch) (used when written as Element)
  *          fc  array begin (next is number of entries)
  *
  *          fd  any length String UTF-16 (next is length (in characters!), then bytes)
@@ -141,7 +141,7 @@ public interface CompactConstants {
 
     public static final int NULL_FIELD = 0xa0;
     public static final int MAP_BEGIN = 0xfa;
-//    public static final int COLLECTIONS_TERMINATOR = 0xfb;  // array / set / list / map terminator  => fb is free! RESERVED
+    public static final int COMPACT_INSTANT = 0xfb;  // an Instant with millisecond precision (next is long, milliseconds since epoch) (used when written as Element)
     public static final int ARRAY_BEGIN = 0xfc;
 
     public static final int INT_2BYTE = 0xe2;
