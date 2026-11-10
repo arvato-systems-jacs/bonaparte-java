@@ -175,6 +175,9 @@ public class StringParserUtil {
                 throw err(MessageParserException.BINARY_TOO_LONG, di, data);
             }
             final byte[] result = Base64.decode(btmp, 0, btmp.length);
+            if (result == null) {
+                throw err(MessageParserException.BASE64_PARSING_ERROR, di, data);
+            }
             // now we can do the actual sharp length check
             if (result.length > di.getLength()) {
                 throw err(MessageParserException.BINARY_TOO_LONG, di, data);

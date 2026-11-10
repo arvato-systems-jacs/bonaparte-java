@@ -409,6 +409,9 @@ public final class StringCSVParser extends AbstractPartialJsonStringParser imple
         try {
             final byte [] btmp = token.getBytes(StandardCharsets.UTF_8);
             final byte [] result =  Base64.decode(btmp, 0, btmp.length);
+            if (result == null) {
+                throw new MessageParserException(MessageParserException.BASE64_PARSING_ERROR, di.getName(), parseIndex, currentClass);
+            }
             if (result.length > di.getLength()) {
                 throw new MessageParserException(MessageParserException.BINARY_TOO_LONG, di.getName(), parseIndex, currentClass);
             }
