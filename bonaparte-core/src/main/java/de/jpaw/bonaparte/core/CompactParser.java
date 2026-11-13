@@ -124,6 +124,7 @@ public class CompactParser extends AbstractCompactParser<IOException> {
 
     @Override
     protected byte [] readBytes(int len) throws IOException {
+        checkDataLength(len);
         if (len == 0)
             return EMPTY_BYTE_ARRAY;
         byte [] data = new byte [len];
@@ -133,12 +134,14 @@ public class CompactParser extends AbstractCompactParser<IOException> {
 
     @Override
     protected ByteArray readByteArray(int len) throws IOException {
+        checkDataLength(len);
         return ByteArray.fromDataInput(in, len);
     }
 
 
     @Override
     protected String readISO(int len) throws IOException {
+        checkDataLength(len);
         char data [] = new char [len];
         for (int i = 0; i < len; ++i)
             data[i] = (char)(0xff & in.readUnsignedByte());     // workaround hazelcast 3.4.x bug
@@ -147,6 +150,7 @@ public class CompactParser extends AbstractCompactParser<IOException> {
 
     @Override
     protected String readUTF16(int len) throws IOException {
+        checkDataLength(len);
         char data [] = new char [len];
         for (int i = 0; i < len; ++i)
             data[i] = in.readChar();
@@ -155,6 +159,7 @@ public class CompactParser extends AbstractCompactParser<IOException> {
 
     @Override
     protected String readUTF8(int len) throws IOException {
+        checkDataLength(len);
         final byte [] tmp = new byte [len];
         in.readFully(tmp);
         try {
