@@ -36,9 +36,16 @@ import de.jpaw.fixedpoint.FixedPointBase;
 import de.jpaw.util.ByteArray;
 
 
-public abstract class AbstractCompactParser<E extends Exception>  extends Settings implements MessageParser<E>, CompactConstants {
+public abstract class AbstractCompactParser<E extends Exception> extends Settings implements MessageParser<E>, CompactConstants {
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractCompactParser.class);
     protected static final byte [] EMPTY_BYTE_ARRAY = new byte [0];
+    public static final int DEFAULT_MAX_DATA_LENGTH = 16 * 1024 * 1024;
+    public static final int DEFAULT_MAX_COLLECTION_ENTRIES = 1024 * 1024;
+
+    /** Maximum length of a length-prefixed string or binary value. */
+    protected int maxDataLength = DEFAULT_MAX_DATA_LENGTH;
+    /** Maximum number of entries accepted in a list, map, or equivalent collection. */
+    protected int maxCollectionEntries = DEFAULT_MAX_COLLECTION_ENTRIES;
 
     // most of these are available from DataInput, but need an Exception mapper
     abstract protected boolean atEnd() throws E;                // test for end of input - can be slow (using exceptions for some implementations, therefore only use if no other method exists)
@@ -71,6 +78,44 @@ public abstract class AbstractCompactParser<E extends Exception>  extends Settin
     protected AbstractCompactParser() {
         if (useCache)
             objects = new ArrayList<BonaPortable>(60);
+    }
+
+    public void setMaxDataLength(int maxDataLength) {
+        if (maxDataLength < 0) {
+            throw new IllegalArgumentException("maxDataLength must not be negative");
+        }
+        this.maxDataLength = maxDataLength;
+    }
+
+    public int getMaxDataLength() {
+        return maxDataLength;
+    }
+
+    public void setMaxCollectionEntries(int maxCollectionEntries) {
+        if (maxCollectionEntries < 0) {
+            throw new IllegalArgumentException("maxCollectionEntries must not be negative");
+        }
+        this.maxCollectionEntries = maxCollectionEntries;
+    }
+
+    public int getMaxCollectionEntries() {
+        return maxCollectionEntries;
+    }
+
+    /** Validates a decoded byte or character length before a concrete parser allocates for it. */
+    protected int checkDataLength(final int len) throws E {
+        if (len < 0 || len > maxDataLength) {
+            throw newMPE(MessageParserException.DATA_LENGTH_OUT_OF_BOUNDS, "Invalid length " + len + " (maximum " + maxDataLength + ")");
+        }
+        return len;
+    }
+
+    /** Validates a decoded collection count before allocating or iterating over the collection. */
+    protected int checkCollectionCount(final int count) throws E {
+        if (count < 0 || count > maxCollectionEntries) {
+            throw newMPE(MessageParserException.ARRAY_SIZE_OUT_OF_BOUNDS, "Invalid collection size " + count + " (maximum " + maxCollectionEntries + ")");
+        }
+        return count;
     }
 
     protected void clearCache() {
@@ -252,13 +297,10 @@ public abstract class AbstractCompactParser<E extends Exception>  extends Settin
                 case ISO_STRING:
                 case COMPACT_BINARY:
                 case UTF8_STRING:
-//                        int len = readInt(needToken(), "(skipping)");
-//                        System.out.println("    String is " + new String(inputdata, parseIndex, len));
-//                        skipBytes(len);
-                    skipBytes(readInt(needToken(), "(skipping)"));
+                    skipBytes(checkDataLength(readInt(needToken(), "(skipping)")));
                     break;
                 case UTF16_STRING:
-                    skipBytes(2 * readInt(needToken(), "(skipping UTF16)"));
+                    skipBytes(2 * checkDataLength(readInt(needToken(), "(skipping UTF16)")));
                     break;
                 default:
                     throw newMPE(MessageParserException.UNSUPPORTED_TOKEN, null); // TODO (-2 values...)
@@ -726,8 +768,9 @@ public abstract class AbstractCompactParser<E extends Exception>  extends Settin
             }
             // all good here. Parse the contents
             // if we use the cache, make the object known even before the contents has been parsed, because it may be referenced if the structure is cyclic
-            if (useCache)
+            if (useCache) {
                 objects.add(newObject);
+            }
 
             currentClass = classname;
             newObject.deserialize(this);
@@ -744,7 +787,7 @@ public abstract class AbstractCompactParser<E extends Exception>  extends Settin
     public int parseMapStart(FieldDefinition di) throws E {
         if (checkForNullOrNeedToken(di.getName(), di.getIsAggregateRequired(), MAP_BEGIN))
             return COLLECTION_COUNT_NULL;
-        return readInt(needToken(), di.getName());
+        return checkCollectionCount(readInt(needToken(), di.getName()));
     }
 
 
@@ -752,7 +795,7 @@ public abstract class AbstractCompactParser<E extends Exception>  extends Settin
     public int parseArrayStart(FieldDefinition di, int sizeOfElement) throws E {
         if (checkForNullOrNeedToken(di.getName(), di.getIsAggregateRequired(), ARRAY_BEGIN))
             return COLLECTION_COUNT_NULL;
-        return readInt(needToken(), di.getName());
+        return checkCollectionCount(readInt(needToken(), di.getName()));
     }
 
 
@@ -771,8 +814,10 @@ public abstract class AbstractCompactParser<E extends Exception>  extends Settin
     @Override
     public List<BonaPortable> readTransmission() throws E {
         List<BonaPortable> results = new ArrayList<BonaPortable>();
-        while (!atEnd())
+        while (!atEnd()) {
+            checkCollectionCount(results.size() + 1);
             results.add(readRecord());
+        }
         return results;
     }
 
@@ -823,6 +868,7 @@ public abstract class AbstractCompactParser<E extends Exception>  extends Settin
             if (c == OBJECT_TERMINATOR) {
                 return map;
             }
+            checkCollectionCount(map.size() + 1);
             pushback(c);
             addMapElem(map);
         }
@@ -855,7 +901,7 @@ public abstract class AbstractCompactParser<E extends Exception>  extends Settin
     }
 
     protected List<Object> readArraySub() throws E {
-        final int numElem = readInt(needToken(), "$jsonArrayNumElem");
+        final int numElem = checkCollectionCount(readInt(needToken(), "$jsonArrayNumElem"));
         final List<Object> l = new ArrayList<Object>(numElem);
         for (int i = 0; i < numElem; ++i)
             l.add(readElementSub());
@@ -863,7 +909,7 @@ public abstract class AbstractCompactParser<E extends Exception>  extends Settin
     }
 
     protected Map<String, Object> readMapFixedSizeSub() throws E {
-        final int numElem = readInt(needToken(), "$jsonMapNumElem");
+        final int numElem = checkCollectionCount(readInt(needToken(), "$jsonMapNumElem"));
         final Map<String, Object> map = new HashMap<String, Object>(FreezeTools.getInitialHashMapCapacity(numElem));
         for (int i = 0; i < numElem; ++i) {
             addMapElem(map);

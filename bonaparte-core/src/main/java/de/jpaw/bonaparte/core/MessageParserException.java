@@ -110,6 +110,7 @@ public class MessageParserException extends ApplicationException {
     public static final int STRING_TOO_SHORT             = OFFSET + 70;
     public static final int MISSING_CLOSING_QUOTE        = OFFSET + 71;
     public static final int INVALID_INSTANT_FORMAT       = OFFSET + 72;
+    public static final int DATA_LENGTH_OUT_OF_BOUNDS    = OFFSET + 73;
 
 
     static {
@@ -187,6 +188,7 @@ public class MessageParserException extends ApplicationException {
         registerCode(INVALID_ENUM_NAME            , "invalid name to instantiate enum");
         registerCode(MISSING_CLOSING_QUOTE        , "No closing quote found");
         registerCode(INVALID_INSTANT_FORMAT       , "Instant format is invalid, must be UNIX time or yyyy-MM-dd'T'HH:mm:ss");
+        registerCode(DATA_LENGTH_OUT_OF_BOUNDS    , "Length-prefixed value exceeds the parser limit");
     }
 
     /** Creates a parser exception with an explicitly defined position and class name. */

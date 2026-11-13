@@ -205,6 +205,7 @@ public class CompactByteArrayParser extends AbstractCompactParser<MessageParserE
 
     @Override
     protected byte [] readBytes(int len) throws MessageParserException {
+        checkDataLength(len);
         if (len == 0)
             return EMPTY_BYTE_ARRAY;
         require(len);
@@ -216,7 +217,9 @@ public class CompactByteArrayParser extends AbstractCompactParser<MessageParserE
 
     @Override
     protected ByteArray readByteArray(int len) throws MessageParserException {
+        checkDataLength(len);
         if (len > 0) {
+            require(len);
             ByteArray result = new ByteArray(inputdata, parseIndex, len);
             parseIndex += len;
             return result;
@@ -227,6 +230,7 @@ public class CompactByteArrayParser extends AbstractCompactParser<MessageParserE
     // faster implementation: expect that new String (char []) is faster than anything with charset encoder, because the loop in this code will be inline
     @Override
     protected String readISO(int len) throws MessageParserException {
+        checkDataLength(len);
         require(len);
         char data [] = new char [len];
         for (int i = 0; i < len; ++i)
@@ -239,6 +243,7 @@ public class CompactByteArrayParser extends AbstractCompactParser<MessageParserE
     // read len characters
     @Override
     protected String readUTF16(int len) throws MessageParserException {
+        checkDataLength(len);
         len *= 2;
         require(len);
         try {
@@ -253,6 +258,7 @@ public class CompactByteArrayParser extends AbstractCompactParser<MessageParserE
     // read len bytes
     @Override
     protected String readUTF8(int len) throws MessageParserException {
+        checkDataLength(len);
         require(len);
         try {
             String result = new String(inputdata, parseIndex, len, CHARSET_UTF8);
