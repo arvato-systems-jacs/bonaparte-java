@@ -5,13 +5,12 @@ import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.Marshaller;
 import jakarta.xml.bind.Unmarshaller;
 
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import tools.jackson.databind.ObjectMapper;
 
 import de.jpaw.bonaparte.pojos.test.jsonZ.TestJsonZ;
